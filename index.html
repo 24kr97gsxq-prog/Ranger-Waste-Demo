@@ -33,6 +33,11 @@
     --slate:     #3E5C86;
     --slate-bg:  #E8EDF4;
     --red:       #C43D2E;
+    --inset:     #F4F4F8;
+    --req-bg:    #FEF7F1;
+    --amber-ink: #A85A22;
+    --empty-bg:  rgba(255,255,255,.5);
+    --field:     #ffffff;
     --red-bg:    #FBEAE7;
 
     --display: "Barlow Condensed", "Arial Narrow", ui-sans-serif, sans-serif;
@@ -40,7 +45,35 @@
     --mono:    "IBM Plex Mono", ui-monospace, monospace;
   }
 
+  body[data-theme="dark"] {
+    --ground:    #14151F;
+    --panel:     #1E2030;
+    --inset:     #262838;
+    --rule:      #3A3D52;
+    --rule-soft: #2E3145;
+    --ink:       #E8E9F0;
+    --ink-soft:  #B6B9C9;
+    --ink-faint: #7E8296;
+    --brand-box: #1A1B28;
+    --field:     #262838;
+    --empty-bg:  rgba(255,255,255,.04);
+    --req-bg:    #2E2618;
+    --amber-bg:  #33270F;
+    --amber-ink: #E8A76B;
+    --green:     #3F9A6F;
+    --green-bg:  #1B3226;
+    --slate:     #8FB3D4;
+    --slate-bg:  #1F2A3C;
+    --red:       #E06A5A;
+    --red-bg:    #3A211D;
+  }
+  /* dim the light map tiles at night; markers live in a different pane and stay crisp */
+  body[data-theme="dark"] .leaflet-tile-pane { filter: brightness(.7) contrast(1.05) saturate(.75); }
+  body[data-theme="dark"] .leaflet-container { background: #14151F; }
+  body[data-theme="dark"] .excbar .fix { background: var(--panel); color: var(--red); }
+
   * { box-sizing: border-box; }
+  input, select, textarea { background: var(--field); color: var(--ink); }
 
   body {
     margin: 0;
@@ -191,6 +224,57 @@
     float: right;
   }
 
+  /* setup */
+  .rulegrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .rule-card { background: var(--panel); border: 1px solid var(--rule); border-radius: 3px; padding: 11px 12px; }
+  .rule-card label {
+    font-family: var(--display); font-weight: 600; font-size: 11.5px;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint);
+    display: block; margin-bottom: 6px;
+  }
+  .rule-card input {
+    width: 100%; box-sizing: border-box;
+    font-family: var(--mono); font-size: 15px; font-weight: 500;
+    padding: 8px; border: 1px solid var(--rule); border-radius: 2px;
+  }
+  .togglerow {
+    display: flex; gap: 10px; align-items: center;
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 3px;
+    padding: 11px 13px; margin-bottom: 8px; font-size: 13px;
+  }
+  .togglerow .tdesc { color: var(--ink-soft); font-size: 12px; }
+  .tswitch {
+    margin-left: auto; min-width: 52px;
+    border: 1px solid var(--rule); border-radius: 12px; padding: 4px 12px;
+    font-family: var(--display); font-weight: 700; font-size: 12px;
+    letter-spacing: .06em; text-transform: uppercase;
+    background: var(--inset); color: var(--ink-faint);
+  }
+  .tswitch[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: #fff; }
+  .subrow {
+    display: grid; grid-template-columns: auto 1fr auto auto; gap: 12px; align-items: baseline;
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 3px;
+    padding: 11px 13px; margin-bottom: 8px; font-size: 13px;
+  }
+  .subrow .sname { font-weight: 600; }
+  .subrow .sdesc { color: var(--ink-soft); font-size: 12px; }
+  .subrow .scost { font-family: var(--mono); font-size: 12px; text-align: right; min-width: 110px; }
+  .sstat {
+    font-family: var(--display); font-weight: 700; font-size: 11px;
+    letter-spacing: .08em; text-transform: uppercase;
+    border-radius: 2px; padding: 3px 8px;
+  }
+  .sstat.on   { background: var(--green-bg); color: var(--green); }
+  .sstat.stub { background: var(--amber-bg); color: var(--amber-ink); }
+  .sstat.opt  { background: var(--slate-bg); color: var(--slate); }
+  .pipeline { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+  .pipe {
+    font-family: var(--display); font-weight: 600; font-size: 11px;
+    letter-spacing: .06em; text-transform: uppercase;
+    border: 1px dashed var(--rule); border-radius: 2px; padding: 3px 9px; color: var(--ink-faint);
+  }
+  .pipe.now { border-style: solid; border-color: var(--brand-accent); color: var(--amber-ink); background: var(--amber-bg); }
+
   /* board day summary */
   .bstats {
     display: flex;
@@ -213,7 +297,7 @@
 
   .hazard {
     font-size: 12px;
-    color: #7a4a00;
+    color: var(--amber-ink);
     background: var(--amber-bg);
     border: 1px solid var(--brand-peach);
     border-radius: 2px;
@@ -242,7 +326,7 @@
     display: block;
   }
   .stat .n.bad { color: var(--red); }
-  .stat .n.warn { color: #A85A22; }
+  .stat .n.warn { color: var(--amber-ink); }
   .stat .l {
     font-family: var(--display);
     font-weight: 600;
@@ -344,6 +428,17 @@
   }
   .tab:hover { color: #fff; }
   .tab[aria-selected="true"] { color: #fff; border-bottom-color: var(--amber); }
+  .themebtn {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 2px;
+    color: #fff;
+    font-size: 15px;
+    line-height: 1;
+    padding: 5px 10px;
+  }
+  .themebtn:hover { background: rgba(255,255,255,.22); }
+
   .demoflag {
     font-family: var(--display);
     font-size: 12px;
@@ -451,7 +546,7 @@
     text-transform: uppercase;
   }
   .t-delivery .card-type { color: var(--slate); }
-  .t-swap .card-type     { color: #A85A22; }
+  .t-swap .card-type     { color: var(--amber-ink); }
   .t-pickup .card-type   { color: var(--green); }
   .t-relocate .card-type { color: var(--ink-soft); }
 
@@ -606,9 +701,9 @@
     padding: 3px 8px;
     background: none;
   }
-  .s-assigned   { color: var(--ink-soft); border-color: var(--rule); background: #F4F4F8; }
+  .s-assigned   { color: var(--ink-soft); border-color: var(--rule); background: var(--inset); }
   .s-dispatched { color: var(--slate);   border-color: var(--slate); background: var(--slate-bg); }
-  .s-on_site    { color: #A85A22;        border-color: var(--amber); background: var(--amber-bg); }
+  .s-on_site    { color: var(--amber-ink);        border-color: var(--amber); background: var(--amber-bg); }
   .s-complete   { color: var(--green);   border-color: var(--green); background: var(--green-bg); }
   .chip[data-advance]:hover { filter: brightness(.94); }
   .time { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); }
@@ -629,7 +724,7 @@
     padding: 14px 12px;
     color: var(--ink-faint);
     font-size: 12.5px;
-    background: rgba(255,255,255,.5);
+    background: var(--empty-bg);
   }
 
   .lane-meta {
@@ -680,7 +775,7 @@
 
   .stop { border-bottom: 1px solid var(--rule-soft); padding: 12px 14px; }
   .stop:last-child { border-bottom: 0; }
-  .stop.done { background: #F9F9FB; }
+  .stop.done { background: var(--ground); }
   .stop-top { display: flex; gap: 10px; align-items: flex-start; }
   .stop-seq {
     font-family: var(--display);
@@ -708,7 +803,7 @@
   .stop-act:hover { background: var(--brand-deep); }
   .stop-act.finish { background: var(--green); }
   .stop-act.finish:hover { background: #245F44; }
-  .stop-act.locked { background: #ECEDF2; color: var(--ink-faint); cursor: default; }
+  .stop-act.locked { background: var(--rule-soft); color: var(--ink-faint); cursor: default; }
   .capture {
     margin-top: 9px;
     border: 1px dashed var(--rule);
@@ -716,7 +811,7 @@
     padding: 10px;
     font-size: 12px;
     color: var(--ink-faint);
-    background: #F9F9FB;
+    background: var(--ground);
   }
   .capture strong { color: var(--ink-soft); font-weight: 600; }
 
@@ -747,8 +842,8 @@
     padding: 1px 6px;
     border-radius: 2px;
   }
-  .dwell.ok   { color: var(--ink-faint); background: #F4F4F8; }
-  .dwell.warn { color: #A85A22; background: var(--amber-bg); }
+  .dwell.ok   { color: var(--ink-faint); background: var(--inset); }
+  .dwell.warn { color: var(--amber-ink); background: var(--amber-bg); }
   .dwell.late { color: var(--red);  background: var(--red-bg); }
 
   /* ---------- toast + modal ---------- */
@@ -915,9 +1010,9 @@
     border-left: 3px solid;
   }
   .sameday.yes { background: var(--green-bg); color: var(--green); border-color: var(--green); }
-  .sameday.no  { background: var(--amber-bg); color: #A85A22; border-color: var(--amber); }
+  .sameday.no  { background: var(--amber-bg); color: var(--amber-ink); border-color: var(--amber); }
   .included {
-    background: #F9F9FB;
+    background: var(--ground);
     border: 1px solid var(--rule-soft);
     border-radius: 2px;
     padding: 10px 12px;
@@ -956,7 +1051,7 @@
   }
   .whens { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
   .when-opt {
-    background: #F4F4F8;
+    background: var(--inset);
     border: 1px solid var(--rule);
     border-radius: 2px;
     padding: 7px 12px;
@@ -966,7 +1061,7 @@
   .when-opt[aria-pressed="true"] {
     background: var(--amber-bg);
     border-color: var(--amber);
-    color: #A85A22;
+    color: var(--amber-ink);
     font-weight: 600;
   }
   .reqform textarea {
@@ -1004,7 +1099,7 @@
   .rail-section:first-child { margin-top: 0; }
   .card.req {
     border-left-color: var(--amber) !important;
-    background: #FEF7F1;
+    background: var(--req-bg);
   }
   .card.req .card-foot { gap: 6px; }
   .yes, .no {
@@ -1024,7 +1119,7 @@
   .src {
     font-family: var(--mono);
     font-size: 10.5px;
-    color: #A85A22;
+    color: var(--amber-ink);
     background: var(--amber-bg);
     padding: 2px 6px;
     border-radius: 2px;
@@ -1046,7 +1141,7 @@
     font-size: 15px;
     letter-spacing: .05em;
     text-transform: uppercase;
-    color: #A85A22;
+    color: var(--amber-ink);
   }
   .warnbox p { margin: 5px 0 0; font-size: 13px; color: var(--ink-soft); }
 
@@ -1097,7 +1192,7 @@
     font-size: 12px;
     letter-spacing: .06em;
     text-transform: uppercase;
-    color: #A85A22;
+    color: var(--amber-ink);
     background: var(--amber-bg);
     padding: 2px 7px;
     border-radius: 2px;
@@ -1111,7 +1206,7 @@
   .codeblock {
     font-family: var(--mono);
     font-size: 11.5px;
-    background: #F4F4F8;
+    background: var(--inset);
     border: 1px solid var(--rule);
     border-radius: 2px;
     padding: 10px;
@@ -1130,10 +1225,10 @@
     margin: 12px 0 6px;
     position: relative;
   }
-  .mapwrap svg { width: 100%; height: auto; display: block; }
+  #mapBox.schematic svg { width: 100%; height: auto; display: block; }
   #mapBox { height: 460px; border-radius: 2px; overflow: hidden; }
   #mapBox.schematic { height: auto; }
-  .leaflet-container { background: #ECEDF2; font-family: var(--body); }
+  .leaflet-container { background: var(--rule-soft); font-family: var(--body); }
   .mk-can {
     background: var(--steel);
     color: #fff;
@@ -1245,7 +1340,9 @@
     <button class="tab" role="tab" aria-selected="false" data-screen="cans">Equipment</button>
     <button class="tab" role="tab" aria-selected="false" data-screen="bill">Billing</button>
     <button class="tab" role="tab" aria-selected="false" data-screen="reports">Reports</button>
+    <button class="tab" role="tab" aria-selected="false" data-screen="setup">Setup</button>
   </div>
+  <button class="themebtn" id="themeBtn" aria-label="Switch between day and night view">&#9789;</button>
   <div class="demoflag">Demo data</div>
 </div>
 
@@ -1281,8 +1378,8 @@
     <div style="display:flex;align-items:center;gap:8px;max-width:390px;margin:0 auto 10px">
       <span class="eyebrow">App language</span>
       <div class="langrow">
-        <button class="lang" data-lang="en" style="background:#F4F4F8;border-color:var(--rule);color:var(--ink-soft)">EN</button>
-        <button class="lang" data-lang="es" style="background:#F4F4F8;border-color:var(--rule);color:var(--ink-soft)">ES</button>
+        <button class="lang" data-lang="en" style="background:var(--inset);border-color:var(--rule);color:var(--ink-soft)">EN</button>
+        <button class="lang" data-lang="es" style="background:var(--inset);border-color:var(--rule);color:var(--ink-soft)">ES</button>
       </div>
     </div>
     <div class="phone" id="phone"></div>
@@ -1381,6 +1478,35 @@
   </div>
 </section>
 
+<!-- ============ SETUP ============ -->
+<section class="screen" id="screen-setup">
+  <div class="bill-wrap">
+    <div class="col-head">
+      <div class="col-title">Setup</div>
+      <div class="col-sub">rules, notifications, and what this costs</div>
+    </div>
+
+    <div class="warnbox">
+      <div class="wt">No keys or passwords live on this page — ever</div>
+      <p>Connections like Twilio are configured server-side by the vendor and never typed into a
+        browser. This page holds the things Ranger's office should control: the business rules the
+        math runs on, which moments send a text, and a plain-English view of every subscription.</p>
+    </div>
+
+    <div class="col-head" style="margin-top:8px"><div class="col-title">Business rules</div>
+      <div class="col-sub">change a number — Billing and Reports recalculate</div></div>
+    <div id="setupRates"></div>
+
+    <div class="col-head" style="margin-top:24px"><div class="col-title">Customer texting</div>
+      <div class="col-sub">stubbed until 10DLC clears — switches control the previews</div></div>
+    <div id="setupNotify"></div>
+
+    <div class="col-head" style="margin-top:24px"><div class="col-title">Connections &amp; bolt-ons</div>
+      <div class="col-sub">every recurring cost, on one screen</div></div>
+    <div id="setupSubs"></div>
+  </div>
+</section>
+
 <!-- ============ REPORTS ============ -->
 <section class="screen" id="screen-reports">
   <div class="bill-wrap">
@@ -1427,13 +1553,13 @@
 <div class="sheet" id="sheet">
   <div class="sheet-card">
     <div class="eyebrow">Read this to Ranger, then let them tear it up</div>
-    <h2>A dozen guesses baked into these screens</h2>
+    <h2>The guesses baked into these screens</h2>
     <p style="margin:6px 0 0;color:var(--ink-soft)">Every one of these was invented, not learned from Ranger. Any that are
       wrong are cheap to change now and expensive to change later.</p>
     <div class="warnbox" style="margin:14px 0 4px">
       <div class="wt">Real in this demo, versus drawn</div>
       <p><b>Actually works:</b> assigning stops, advancing status, a customer request landing on the
-        board, the day-summary strip, drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the map, the Reports tab math, and the CSV download &mdash; that
+        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, and the CSV download &mdash; that
         file is real.
         <br><b>Placeholder:</b> the addresses on the map are invented, nothing is reporting live GPS,
         every dollar figure is a Dallas market average rather than Ranger's own rate, and compactor fill percentages are invented. The brand colors, though, are Ranger's real ones.</p>
@@ -1447,6 +1573,7 @@
       <li><b>Blocked and contaminated stops go to the office, and stop there.</b> The alert bar tells dispatch, and a human decides. What we don't know: does a contaminated load get re-quoted, refused, or hauled at a penalty rate? That's a pricing policy, not a software feature.</li>
       <li><b>Live load wait-time billing is a guess at a mechanism.</b> "Billable after 30 minutes" is invented. Whether Ranger bills wait time at all, and at what increment, is a discovery question.</li>
       <li><b>The yard and the field talk both ways now.</b> A completed pickup returns the can to yard stock automatically; a TBD delivery pulls one out. Compactor receiver boxes still don't round-trip — the demo assumes the same box always comes back.</li>
+      <li><b>Who's allowed to touch Setup is undecided.</b> Rates and texting switches are powerful — a driver must never see them, and maybe not every dispatcher either. In the build this is a role (admin vs dispatcher vs driver) enforced in the database, not a hidden tab. Also unasked: quiet hours — should a job that finishes at 8 PM text the customer at 8 PM?</li>
       <li><b>The customer's service history is canned.</b> The dated rows are invented; only jobs completed during this demo session are real. In the build, history derives from completed orders — including the delivery photo the customer can open when someone disputes where the can was set.</li>
       <li><b>The status timeline shows five clean steps.</b> Real orders reschedule, block, and bounce. What the customer should see when a stop goes sideways — honest "we hit a problem" or a quiet delay — is a customer-service policy Ranger has to pick.</li>
       <li><b>The DivertScan card is a teaser, not an integration.</b> The diversion numbers on Reports are invented. The real design is an API between two separate systems — a Dalmex weigh-in auto-closes the dispatch order — and it is deliberately not built yet. LEED reporting itself stays DivertScan's job, full stop.</li>
@@ -1458,12 +1585,12 @@
       <li><b>One dispatcher, one board.</b> If two or three people take orders at once, the board needs locking and a change log.</li>
       <li><b>A day at a time.</b> No week view, no tomorrow's pre-builds. Real dispatch often works a rolling 10 days out.</li>
       <li><b>A driver's stops are ordered but not routed.</b> Dispatcher decides sequence by hand. No mileage, no time windows honoured.</li>
-      <li><b>Four order types</b> — delivery, swap, pickup, relocate. Dump-and-return, live load, and dry run are missing and may matter more.</li>
+      <li><b>Seven order types now</b> — delivery, swap, pickup, relocate, dump &amp; return, live load, compactor haul, plus dry runs. Still guessed: whether that's the full set. Ask the dispatcher what else they say on the phone that isn't on this list.</li>
       <li><b>TBD cans get assigned on the truck now.</b> A delivery with no can number asks the driver which can they grabbed from the yard, offers only ready cans of the right size, and moves it from yard stock to the field on completion. Still guessed: whether that's actually how Ranger loads out, or whether the dispatcher assigns at the desk.</li>
-      <li><b>Status is linear</b> — dispatched, on site, complete. No blocked, no rescheduled, no customer-not-ready, no overweight.</li>
-      <li><b>One photo and a note closes a stop.</b> No weight ticket, no signature, no material contamination flag.</li>
+      <li><b>Status now branches</b> — blocked, contaminated, and dry run exist alongside the happy path. Still missing: rescheduled. A customer calling to push a stop to Thursday currently means delete-and-retype, and that's probably a daily event.</li>
+      <li><b>A stop now closes with photo, tons, tipping fee, and a flag for the next driver.</b> Still missing: a customer signature. Whether Ranger ever needs one — residential driveway drops are the usual case — is a discovery question, not a default.</li>
       <li><b>Drivers always have signal.</b> Nothing here works offline. If there are dead zones on their routes, this whole design changes.</li>
-      <li><b>The customer text fires when the driver marks complete.</b> Might be wrong moment. En route may be the one that actually saves phone calls.</li>
+      <li><b>Customer texts fire at dispatch and at completion.</b> Two moments, guessed. Which moments actually stop the phone from ringing — and which just annoy — is something only Ranger's call log knows.</li>
       <li><b>Customers get a link, not a login.</b> No password, no account to manage, works for a site super who will never sign up for anything. If Ranger has property managers who need to see months of history across a dozen sites, that argument flips.</li>
       <li><b>Every request needs a dispatcher's yes.</b> A customer asking for a pickup does not create work on a truck by itself. If Ranger would rather requests drop straight onto the board, that is a one-line change — but it hands route control to the customer.</li>
       <li><b>One contact per account.</b> Real jobs have an office that pays and a super on site who actually needs the text. Those are often different people and different numbers.</li>
@@ -2238,6 +2365,77 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
 
   function beforeCutoff() { return new Date().getHours() < CUTOFF_HOUR; }
 
+  function renderSetup() {
+    // Business rules — edit and the money math everywhere recalculates.
+    $('setupRates').innerHTML = `<div class="rulegrid">
+      ${['15 yd', '20 yd', '30 yd'].map(sz => `<div class="rule-card">
+        <label>Haul rate — ${sz}</label>
+        <input type="number" step="1" min="0" value="${RATES.haul[sz]}" data-rate="haul|${sz}"></div>`).join('')}
+      <div class="rule-card"><label>Free days on site</label>
+        <input type="number" step="1" min="0" value="${RATES.freeDays}" data-rate="freeDays"></div>
+      <div class="rule-card"><label>Extra day ($)</label>
+        <input type="number" step="1" min="0" value="${RATES.extraDay}" data-rate="extraDay"></div>
+      <div class="rule-card"><label>Overage per ton ($)</label>
+        <input type="number" step="1" min="0" value="${RATES.overagePerTon}" data-rate="overagePerTon"></div>
+      <div class="rule-card"><label>Dry run fee ($)</label>
+        <input type="number" step="1" min="0" value="${RATES.dryRun}" data-rate="dryRun"></div>
+    </div>
+    <p style="font-size:12px;color:var(--ink-faint);margin:10px 0 0">Prefilled with Dallas market
+      averages. Type Ranger's real numbers and every screen updates — that's the whole point:
+      the rate sheet is theirs, not hardcoded. In the build, editing this is an admin-only permission.</p>`;
+
+    // Texting switches
+    const rows = [
+      { k: 'dispatched', t: 'Driver is on the way', d: 'Fires when a stop goes out. The text that stops the "where\u2019s my dumpster" call.' },
+      { k: 'complete',   t: 'Job complete',          d: 'Fires when the driver finishes, photo attached.' },
+      { k: 'day6',       t: 'Free days ending',      d: 'Day-6 heads-up. Per-customer mute lives on the Reports tab.' },
+      { k: 'morning',    t: 'Morning access check',  d: '"We\u2019re coming today \u2014 gate open?" The dry-run killer.' },
+    ];
+    $('setupNotify').innerHTML = rows.map(r => `<div class="togglerow">
+      <div><b>${r.t}</b><div class="tdesc">${r.d}</div></div>
+      <button class="tswitch" data-notify="${r.k}" aria-pressed="${NOTIFY[r.k]}">${NOTIFY[r.k] ? 'On' : 'Off'}</button>
+    </div>`).join('');
+
+    // Connections & bolt-ons — statuses, not secrets
+    $('setupSubs').innerHTML = `
+      <div class="subrow"><span class="sstat stub">Stubbed</span>
+        <span><span class="sname">Texting (Twilio)</span>
+          <div class="sdesc">Configured server-side by the vendor. Nothing sends until A2P 10DLC
+            registration clears \u2014 the pipeline below is the long-lead item in the whole build.</div>
+          <div class="pipeline">
+            <span class="pipe now">Not started</span><span>&rarr;</span>
+            <span class="pipe">Brand registered</span><span>&rarr;</span>
+            <span class="pipe">Campaign vetted (1\u20133 wks)</span><span>&rarr;</span>
+            <span class="pipe">Live</span>
+          </div></span>
+        <span class="scost">~$20\u2013$45 / mo<br>at Ranger's volume</span></div>
+      <div class="subrow"><span class="sstat on">Active</span>
+        <span><span class="sname">QuickBooks export (CSV)</span>
+          <div class="sdesc">Download from the Billing tab, import into QuickBooks. No Intuit
+            review gate, no API fee.</div></span>
+        <span class="scost">included</span></div>
+      <div class="subrow"><span class="sstat on">Demo tiles</span>
+        <span><span class="sname">Map</span>
+          <div class="sdesc">OpenStreetMap for the demo. Production moves to Google or Mapbox,
+            billed per map load.</div></span>
+        <span class="scost">$0 now &middot; ~$0\u2013$25 / mo</span></div>
+      <div class="subrow"><span class="sstat opt">Planned</span>
+        <span><span class="sname">DivertScan bridge</span>
+          <div class="sdesc">A load weighed at Dalmex auto-closes the dispatch order and prefills
+            tonnage. API between two systems \u2014 never a shared database.</div></span>
+        <span class="scost">priced later</span></div>
+      <div class="subrow"><span class="sstat opt">Optional</span>
+        <span><span class="sname">GPS trackers on cans</span>
+          <div class="sdesc">Theft detection and moved-can alerts. The app already derives location
+            from dispatch events for free \u2014 this add-on is only for cans that move without a driver.</div></span>
+        <span class="scost">$50\u2013$200 / can<br>+ $5\u2013$40 / can / mo</span></div>
+      <div class="subrow"><span class="sstat opt">Optional</span>
+        <span><span class="sname">Compactor fill monitors</span>
+          <div class="sdesc">Sensors instead of the property phoning it in. Same recurring-cost
+            shape as can GPS.</div></span>
+        <span class="scost">hardware + monthly<br>per unit</span></div>`;
+  }
+
   function renderReports() {
     // Turnover: derived from the same demo state everything else uses.
     const total = CANS.length;
@@ -2369,6 +2567,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
 
     if (!mapObj) {
       mapObj = L.map(box, { scrollWheelZoom: false }).setView([32.83, -96.775], 11);
+      mapObj.attributionControl.setPrefix(false);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
         attribution: '&copy; OpenStreetMap contributors'
@@ -2459,7 +2658,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const yx = X(YARD.lng), yy = Y(YARD.lat);
     $('mapBox').innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img"
       aria-label="Fallback schematic of container and truck positions">
-      <rect x="${pad}" y="${pad}" width="${W - pad * 2}" height="${H - pad * 2}" fill="#F9F9FB"/>
+      <rect x="${pad}" y="${pad}" width="${W - pad * 2}" height="${H - pad * 2}" fill="var(--ground)"/>
       ${grid.join('')}
       <rect x="${pad}" y="${pad}" width="${W - pad * 2}" height="${H - pad * 2}" fill="none"
         stroke="var(--rule)" stroke-width="1.5"/>
@@ -2567,7 +2766,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }).join('');
   }
 
-  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderYard(); renderCans(); renderBill(); renderReports(); renderExcBar(); }
+  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderYard(); renderCans(); renderBill(); renderReports(); renderSetup(); renderExcBar(); }
 
   function toast(label, msg) {
     const el = document.createElement('div');
@@ -2624,10 +2823,10 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       }
     }
 
-    if (o.status === 'dispatched') {
+    if (o.status === 'dispatched' && NOTIFY.dispatched) {
       toast('Would text customer', `${o.customer}: your ${o.size} ${o.type} for ${o.site} is on the way.`);
     }
-    if (o.status === 'complete') {
+    if (o.status === 'complete' && NOTIFY.complete) {
       toast('Would text customer', `${o.customer}: ${o.type} complete at ${o.site}. Photo attached.`);
     }
     render();
@@ -2791,6 +2990,12 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const lg = t.closest('[data-lang]');
     if (lg) { lang = lg.dataset.lang; renderDriver(); return; }
 
+    const nt = t.closest('[data-notify]');
+    if (nt) {
+      NOTIFY[nt.dataset.notify] = !NOTIFY[nt.dataset.notify];
+      renderSetup();
+      return;
+    }
     const mu = t.closest('[data-mute]');
     if (mu) {
       const c = mu.dataset.mute;
@@ -2799,12 +3004,14 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       return;
     }
     if (t.closest('[data-day6]')) {
+      if (!NOTIFY.day6) { toast('Switched off', 'The free-days text is turned off on the Setup tab.'); return; }
       CANS.filter(k => k.days >= RATES.freeDays - 1 && !NUDGE_MUTED.has(k.customer) && !ORDERS.find(o => o.can === k.num && o.status !== 'complete'))
         .slice(0, 4).forEach(k =>
           toast('Would text customer', `${k.customer}: your ${RATES.freeDays} free days on the can at ${k.site} end soon. Reply EXTEND to keep it ($${RATES.extraDay}/day) or PICKUP and we'll come get it.`));
       return;
     }
     if (t.closest('[data-morning]')) {
+      if (!NOTIFY.morning) { toast('Switched off', 'The morning access check is turned off on the Setup tab.'); return; }
       ORDERS.filter(o => o.driver && (o.status === 'assigned' || o.status === 'dispatched'))
         .slice(0, 4).forEach(o =>
           toast('Would text customer', `${o.customer}: Ranger is coming to ${o.site} today (${o.window}). Please make sure the area is clear and any gate is open.`));
@@ -2863,8 +3070,22 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }
   });
 
+  // Rate edits recalculate the money math live (change fires on blur, so typing isn't interrupted)
+  document.addEventListener('change', e => {
+    const r = e.target.closest('[data-rate]');
+    if (!r) return;
+    const v = parseFloat(r.value);
+    if (isNaN(v) || v < 0) { renderSetup(); return; }
+    const parts = r.dataset.rate.split('|');
+    if (parts[0] === 'haul') RATES.haul[parts[1]] = v; else RATES[parts[0]] = v;
+    renderBill(); renderReports(); renderCust();
+  });
+
   // ---- Drag and drop (desktop). Click-to-assign still works everywhere. ----
   const NUDGE_MUTED = new Set();   // customers who opted out of the day-6 text
+
+  // Which events send a customer text. Flipped from the Setup tab.
+  const NOTIFY = { dispatched: true, complete: true, day6: true, morning: true };
 
   let dragId = null;
 
@@ -2917,6 +3138,17 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     dragId = null;
     document.querySelectorAll('[data-lane]').forEach(l => l.classList.remove('dropping'));
   });
+
+  // Day/night. Defaults to the device preference; the moon/sun button overrides.
+  function setTheme(mode) {
+    if (mode === 'dark') document.body.setAttribute('data-theme', 'dark');
+    else document.body.removeAttribute('data-theme');
+    const b = document.getElementById('themeBtn');
+    if (b) b.innerHTML = mode === 'dark' ? '&#9788;' : '&#9789;';
+  }
+  setTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.getElementById('themeBtn').addEventListener('click', () =>
+    setTheme(document.body.hasAttribute('data-theme') ? 'light' : 'dark'));
 
   renderCutoff();
   setInterval(renderCutoff, 30000);
