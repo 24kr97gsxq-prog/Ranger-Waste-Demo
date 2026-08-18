@@ -1278,6 +1278,12 @@
     <div id="rptLeakage"></div>
 
     <div class="col-head" style="margin-top:24px">
+      <div class="col-title">Diversion &amp; LEED — lives in DivertScan</div>
+      <div class="col-sub">separate system, connected by API</div>
+    </div>
+    <div id="rptLeed"></div>
+
+    <div class="col-head" style="margin-top:24px">
       <div class="col-title">Nudges to send</div>
       <div class="col-sub">stubbed — no real texts until 10DLC clears</div>
     </div>
@@ -1301,7 +1307,7 @@
     <div class="warnbox" style="margin:14px 0 4px">
       <div class="wt">Real in this demo, versus drawn</div>
       <p><b>Actually works:</b> assigning stops, advancing status, a customer request landing on the
-        board, drag-and-drop assignment, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the map, the Reports tab math, and the CSV download &mdash; that
+        board, drag-and-drop assignment, the after-cutoff override, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the map, the Reports tab math, and the CSV download &mdash; that
         file is real.
         <br><b>Placeholder:</b> the addresses on the map are invented, nothing is reporting live GPS,
         every dollar figure is a Dallas market average rather than Ranger's own rate, and compactor fill percentages are invented. The brand colors, though, are Ranger's real ones.</p>
@@ -1311,21 +1317,21 @@
       <li><b>Compactor fill percentage is reported, not sensed.</b> The bars assume somebody at the property tells Ranger the unit is full. Real fill monitors are hardware on every unit plus a monthly fee each, the same shape of recurring cost as can GPS. Worth knowing whether Ranger already has them.</li>
       <li><b>Compactor pricing is blank on purpose.</b> Haul, disposal and monthly rental all read "ask Ranger". Compactor deals are negotiated per site and there is no meaningful market average to borrow, so a gap is more honest than a number.</li>
       <li><b>The 15 yard has no published weight allowance.</b> The 20 and 30 list 4 and 5 tons. The 15 lists none, so billing shows a gap instead of a number. Easy question, real hole.</li>
-      <li><b>The 4 PM cutoff is treated as a hard line.</b> The red bar counts down to it and anything requested after it is flagged next-day. In practice a dispatcher probably squeezes in a 4:20 call for a good customer. If so the rule needs an override, not just a flag.</li>
-      <li><b>Brand colors are a placeholder.</b> Set at the top of the file in four variables. Nothing was matched to their actual site — send the hex codes and it repaints.</li>
+      <li><b>The 4 PM cutoff now has an override.</b> After-cutoff requests land in a Tomorrow section, and the dispatcher can hit "Squeeze in today" for a good customer. What's still guessed: whether Ranger's policy allows that at all, and who's allowed to press it.</li>
       <li><b>Blocked and contaminated stops go to the office, and stop there.</b> The alert bar tells dispatch, and a human decides. What we don't know: does a contaminated load get re-quoted, refused, or hauled at a penalty rate? That's a pricing policy, not a software feature.</li>
       <li><b>Live load wait-time billing is a guess at a mechanism.</b> "Billable after 30 minutes" is invented. Whether Ranger bills wait time at all, and at what increment, is a discovery question.</li>
-      <li><b>The yard list is typed in, not derived.</b> In the real build a can returns to the yard automatically when a pickup completes. Here the two lists don't talk.</li>
+      <li><b>The yard and the field talk both ways now.</b> A completed pickup returns the can to yard stock automatically; a TBD delivery pulls one out. Compactor receiver boxes still don't round-trip — the demo assumes the same box always comes back.</li>
+      <li><b>The DivertScan card is a teaser, not an integration.</b> The diversion numbers on Reports are invented. The real design is an API between two separate systems — a Dalmex weigh-in auto-closes the dispatch order — and it is deliberately not built yet. LEED reporting itself stays DivertScan's job, full stop.</li>
       <li><b>The geofence stamp is faked.</b> On a completed stop the demo stamps the can's known coordinates; the real build stamps the phone's GPS at the moment of the tap. Same screen, different truth.</li>
       <li><b>Tipping fee entry assumes one fee per stop, typed by the driver.</b> If Ranger runs house accounts at facilities and gets a monthly statement instead of per-load tickets, this field changes shape.</li>
-      <li><b>The day-6 nudge assumes customers want to be nudged.</b> Some accounts (long construction jobs) will find it noise. Needs a per-customer switch.</li>
+      <li><b>The day-6 nudge has a per-customer mute now</b> — the switch is on the Reports tab. Still guessed: which accounts should default to muted (long construction jobs), and whether mute should live on the customer or the job site.</li>
       <li><b>GPS on cans is assumed, not built.</b> Trackers run roughly $50 to $200 of hardware per unit plus a monthly cellular fee on each one. On a 30-can fleet the subscriptions alone run into the hundreds per month, forever. Truck GPS is nearly free by comparison &mdash; the driver's phone already knows where it is.</li>
       <li><b>Spanish covers the app, not the content.</b> Buttons and labels switch. The dispatcher's note about the gate code stays in whatever language it was typed in. Auto-translating job instructions is a good way to get a can set in the wrong place.</li>
       <li><b>One dispatcher, one board.</b> If two or three people take orders at once, the board needs locking and a change log.</li>
       <li><b>A day at a time.</b> No week view, no tomorrow's pre-builds. Real dispatch often works a rolling 10 days out.</li>
       <li><b>A driver's stops are ordered but not routed.</b> Dispatcher decides sequence by hand. No mileage, no time windows honoured.</li>
       <li><b>Four order types</b> — delivery, swap, pickup, relocate. Dump-and-return, live load, and dry run are missing and may matter more.</li>
-      <li><b>The can number is known before the delivery.</b> If drivers grab whatever is on the yard, the can gets assigned on the truck, not at the desk.</li>
+      <li><b>TBD cans get assigned on the truck now.</b> A delivery with no can number asks the driver which can they grabbed from the yard, offers only ready cans of the right size, and moves it from yard stock to the field on completion. Still guessed: whether that's actually how Ranger loads out, or whether the dispatcher assigns at the desk.</li>
       <li><b>Status is linear</b> — dispatched, on site, complete. No blocked, no rescheduled, no customer-not-ready, no overweight.</li>
       <li><b>One photo and a note closes a stop.</b> No weight ticket, no signature, no material contamination flag.</li>
       <li><b>Drivers always have signal.</b> Nothing here works offline. If there are dead zones on their routes, this whole design changes.</li>
@@ -1586,10 +1592,14 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   function cardHTML(o) {
     let foot;
     if (o.status === 'requested') {
-      foot = `<button class="yes" data-accept="${o.id}">Accept</button>
-              <button class="no" data-decline="${o.id}">Decline</button>
-              <span class="src">${esc(o.requestedAt)}</span>
-              ${o.afterCutoff ? '<span class="after">after 4 PM — cannot promise today</span>' : ''}`;
+      foot = o.afterCutoff
+        ? `<button class="yes" data-accept="${o.id}">Accept — tomorrow</button>
+           <button class="yes" data-override="${o.id}" style="background:var(--brand-accent);border-color:var(--brand-accent);color:var(--brand-deep)">Squeeze in today</button>
+           <button class="no" data-decline="${o.id}">Decline</button>
+           <span class="after">came in after 4 PM</span>`
+        : `<button class="yes" data-accept="${o.id}">Accept</button>
+           <button class="no" data-decline="${o.id}">Decline</button>
+           <span class="src">${esc(o.requestedAt)}</span>`;
     } else if (o.status === 'unassigned') {
       foot = `<span class="time">${esc(o.window)} window</span>
               ${o.source === 'customer' ? '<span class="src">customer request</span>' : ''}`;
@@ -1625,9 +1635,14 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     if (reqs.length) {
       html += `<div class="rail-section">Came in from customers</div>` + reqs.map(cardHTML).join('');
     }
-    html += `<div class="rail-section">Ready to assign</div>`;
-    html += rail.length ? rail.map(cardHTML).join('')
+    const today = rail.filter(o => !o.afterCutoff);
+    const tomorrow = rail.filter(o => o.afterCutoff);
+    html += `<div class="rail-section">Ready to assign — today</div>`;
+    html += today.length ? today.map(cardHTML).join('')
       : `<div class="empty">Nothing waiting. Every order on the board is on a truck.</div>`;
+    if (tomorrow.length) {
+      html += `<div class="rail-section">Tomorrow — came in after cutoff</div>` + tomorrow.map(cardHTML).join('');
+    }
     $('railList').innerHTML = html;
 
     $('boardRoot').classList.toggle('assigning', !!picked);
@@ -1670,9 +1685,22 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
         act = `<button class="stop-act ${isLast ? 'finish' : ''}" data-advance="${o.id}">
                  ${L.next[o.status]}</button>`;
       }
+      const yardMatch = (!o.can && o.status === 'on_site')
+        ? YARD_CANS.filter(k => k.status === 'ready' && k.size === o.size) : [];
+      const canPick = (!o.can && o.status === 'on_site')
+        ? `<div style="margin-top:9px">
+             <span style="font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:5px">${lang==='es'?'¿Qué caja trajiste del patio?':'Which can did you grab from the yard?'}</span>
+             ${yardMatch.length
+               ? `<select id="canpick-${o.id}" style="font-family:var(--mono);font-size:13px;padding:7px;border:1px solid var(--rule);border-radius:2px">
+                    ${yardMatch.map(k => `<option value="${k.num}">Can ${k.num} — ${k.size}</option>`).join('')}
+                  </select>`
+               : `<span style="font-size:12px;color:var(--red)">${lang==='es'?'No hay cajas de ese tamaño listas en el patio.':'No ready cans of that size in the yard.'}</span>`}
+           </div>`
+        : '';
       const cap = o.status === 'on_site'
         ? `<div class="capture">
              <strong>${L.capTitle}</strong> ${L.capBody}
+             ${canPick}
              <div style="margin-top:9px">
                <span style="font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:5px">${L.tons}</span>
                <input id="tons-${o.id}" type="number" step="0.01" min="0" placeholder="4.20"
@@ -2044,13 +2072,44 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
         <span class="how">from driver capture</span>
         <span class="amt">${money(tipPaid)}</span></div>`;
 
+    // DivertScan cross-sell — DEMO DATA ONLY. Real diversion reporting is
+    // DivertScan's job; Ranger Dispatch would pull summaries over an API.
+    // Never a shared database.
+    const LEED_DEMO = [
+      { proj: 'Vaquero Builders — Elm St build-out', rate: 77, tons: 41.5, target: 50 },
+      { proj: 'Trinity Ridge Homes — Ross Ave',      rate: 71, tons: 23.1, target: 50 },
+      { proj: 'Elm Fork Concrete — Lamar teardown',  rate: 85, tons: 13.2, target: 50 },
+    ];
+    $('rptLeed').innerHTML = LEED_DEMO.map(x => `
+      <div class="leakrow" style="border-left:4px solid var(--green)">
+        <span>${esc(x.proj)} <span class="how">LEED v4 &middot; target ${x.target}%</span></span>
+        <span class="how">${x.tons.toFixed(1)} T diverted</span>
+        <span class="amt" style="color:var(--green)">${x.rate}%</span>
+      </div>`).join('') +
+      `<div class="nudge" style="border-left-color:var(--green)">
+        <div class="nt">Why this box is here</div>
+        <p>Loads Ranger weighs in at Dalmex already produce LEED diversion reports in
+        <b>DivertScan</b> — the reports Ranger hands its own customers today. In the real build,
+        a load weighed at Dalmex auto-closes the dispatch order and prefills the tonnage, over an
+        API between the two systems. The numbers above are demo placeholders; the real ones live
+        in DivertScan.</p></div>`;
+
     // Nudges
-    const day6 = CANS.filter(k => k.days >= RATES.freeDays - 1 && !ORDERS.find(o => o.can === k.num && o.status !== 'complete'));
+    const day6all = CANS.filter(k => k.days >= RATES.freeDays - 1 && !ORDERS.find(o => o.can === k.num && o.status !== 'complete'));
+    const day6 = day6all.filter(k => !NUDGE_MUTED.has(k.customer));
     const todays = ORDERS.filter(o => o.driver && (o.status === 'assigned' || o.status === 'dispatched'));
     $('rptNudges').innerHTML = `
       <div class="nudge"><div class="nt">Free-days ending</div>
         <p>${day6.length} can${day6.length === 1 ? '' : 's'} at day ${RATES.freeDays - 1}+ with nothing scheduled.
         One text turns silent extra days into agreed billable ones.</p>
+        <div style="margin-bottom:9px">${day6all.map(k => {
+          const muted = NUDGE_MUTED.has(k.customer);
+          return `<div style="display:flex;gap:8px;align-items:baseline;font-size:12.5px;padding:4px 0;border-top:1px solid var(--rule-soft);${muted ? 'opacity:.5' : ''}">
+            <span style="font-family:var(--mono);font-size:11px">Can ${k.num}</span>
+            <span>${esc(k.customer)} &middot; day ${k.days}</span>
+            <button class="pull" data-mute="${esc(k.customer)}" style="margin-left:auto">${muted ? 'Unmute' : 'Mute this customer'}</button>
+          </div>`;
+        }).join('')}</div>
         <button class="ask-btn primary" data-day6="1">Preview the ${day6.length} text${day6.length === 1 ? '' : 's'}</button></div>
       <div class="nudge"><div class="nt">Morning access check</div>
         <p>${todays.length} stop${todays.length === 1 ? '' : 's'} on trucks today. "We're coming — cars moved,
@@ -2320,6 +2379,17 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       if (!isNaN(tv) && tv > 0) o.tip = tv.toFixed(2);
       const hz = document.getElementById('haz-' + o.id);
       if (hz && hz.value.trim()) SITE_NOTES[o.site] = hz.value.trim();
+      // TBD can: driver tells the system which can actually left the yard.
+      const cp = document.getElementById('canpick-' + o.id);
+      if (!o.can && cp && cp.value) {
+        o.can = cp.value;
+        const yi = YARD_CANS.findIndex(k => k.num === cp.value);
+        if (yi > -1) {
+          const yc = YARD_CANS.splice(yi, 1)[0];
+          CANS.push({ num: yc.num, size: yc.size, site: o.site, customer: o.customer,
+            days: 0, lat: YARD.lat + (Math.random() - 0.5) * 0.02, lng: YARD.lng + (Math.random() - 0.5) * 0.02 });
+        }
+      }
       // Geofence stamp: in the demo this is the can's known coords; in the real
       // build it is the phone's GPS at the moment of the tap.
       const k = CANS.find(x => x.num === o.can) || COMPACTORS.find(x => x.num === o.can);
@@ -2328,6 +2398,16 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }
 
     o.status = FLOW[i + 1];
+
+    // A completed final pickup puts the can back in the yard — the two lists talk now.
+    if (o.status === 'complete' && o.type === 'pickup' && o.can && !o.dryRun) {
+      const ci = CANS.findIndex(k => k.num === o.can);
+      if (ci > -1) {
+        const k = CANS.splice(ci, 1)[0];
+        YARD_CANS.push({ num: k.num, size: k.size, status: 'ready' });
+        toast('Yard updated', `Can ${k.num} is back in the yard and available to assign.`);
+      }
+    }
 
     if (o.status === 'dispatched') {
       toast('Would text customer', `${o.customer}: your ${o.size} ${o.type} for ${o.site} is on the way.`);
@@ -2445,6 +2525,18 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       render();
       return;
     }
+    const ov = t.closest('[data-override]');
+    if (ov) {
+      const o = ORDERS.find(x => x.id === ov.dataset.override);
+      o.status = 'unassigned';
+      o.afterCutoff = false;
+      o.window = 'Today';
+      o.note = (o.note ? o.note + ' ' : '') + '[Dispatcher override: squeezed in after cutoff.]';
+      toast('Would text customer', `${o.customer}: good news — we can still make it out today to ${o.site}.`);
+      render();
+      return;
+    }
+
     const no = t.closest('[data-decline]');
     if (no) {
       const o = ORDERS.find(x => x.id === no.dataset.decline);
@@ -2484,8 +2576,15 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const lg = t.closest('[data-lang]');
     if (lg) { lang = lg.dataset.lang; renderDriver(); return; }
 
+    const mu = t.closest('[data-mute]');
+    if (mu) {
+      const c = mu.dataset.mute;
+      NUDGE_MUTED.has(c) ? NUDGE_MUTED.delete(c) : NUDGE_MUTED.add(c);
+      renderReports();
+      return;
+    }
     if (t.closest('[data-day6]')) {
-      CANS.filter(k => k.days >= RATES.freeDays - 1 && !ORDERS.find(o => o.can === k.num && o.status !== 'complete'))
+      CANS.filter(k => k.days >= RATES.freeDays - 1 && !NUDGE_MUTED.has(k.customer) && !ORDERS.find(o => o.can === k.num && o.status !== 'complete'))
         .slice(0, 4).forEach(k =>
           toast('Would text customer', `${k.customer}: your ${RATES.freeDays} free days on the can at ${k.site} end soon. Reply EXTEND to keep it ($${RATES.extraDay}/day) or PICKUP and we'll come get it.`));
       return;
@@ -2550,6 +2649,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   });
 
   // ---- Drag and drop (desktop). Click-to-assign still works everywhere. ----
+  const NUDGE_MUTED = new Set();   // customers who opted out of the day-6 text
+
   let dragId = null;
 
   document.addEventListener('dragstart', e => {
