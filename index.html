@@ -86,6 +86,131 @@
     white-space: nowrap;
   }
   .wordmark span { color: var(--amber); }
+  /* customer page frame */
+  .custpage { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+  .cust-head {
+    background: var(--brand-dark);
+    color: #fff;
+    padding: 14px 16px;
+  }
+  .cust-head .cw {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .cust-head .cw span { color: var(--brand-accent); }
+  .cust-head .ct { font-family: var(--mono); font-size: 11px; color: #9EA1B4; margin-top: 2px; }
+  .cust-body { padding: 14px; }
+  .cust-foot {
+    border-top: 1px solid var(--rule-soft);
+    background: var(--brand-box);
+    padding: 11px 16px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+  .cust-foot a { color: var(--ink); font-weight: 600; text-decoration: none; }
+
+  /* status timeline */
+  .tl { display: flex; margin: 10px 0 4px; }
+  .tl .st { flex: 1; text-align: center; position: relative; }
+  .tl .st::before {
+    content: '';
+    display: block;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--rule);
+    margin: 0 auto 4px;
+    border: 2px solid var(--panel);
+    box-shadow: 0 0 0 1px var(--rule);
+    position: relative; z-index: 1;
+  }
+  .tl .st::after {
+    content: '';
+    position: absolute;
+    top: 5px; left: 50%; right: -50%;
+    height: 2px;
+    background: var(--rule-soft);
+  }
+  .tl .st:last-child::after { display: none; }
+  .tl .st.done::before { background: var(--green); box-shadow: 0 0 0 1px var(--green); }
+  .tl .st.done::after { background: var(--green); }
+  .tl .st.now::before { background: var(--brand-accent); box-shadow: 0 0 0 1px var(--brand-accent); }
+  .tl .st .sl {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 10.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .tl .st.done .sl, .tl .st.now .sl { color: var(--ink); }
+
+  .histrow {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-size: 12.5px;
+    padding: 7px 0;
+    border-top: 1px solid var(--rule-soft);
+    color: var(--ink-soft);
+  }
+  .histrow .hd { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); min-width: 52px; }
+  .histrow .ht { margin-left: auto; font-family: var(--mono); font-size: 11px; }
+
+  /* driver extras */
+  .navlink {
+    display: inline-block;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--slate);
+    border: 1px solid var(--slate);
+    border-radius: 2px;
+    padding: 4px 10px;
+    text-decoration: none;
+    margin-top: 7px;
+  }
+  .stamps { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); margin-top: 5px; }
+  .callofc {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 2px;
+    color: #fff;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    text-decoration: none;
+    float: right;
+  }
+
+  /* board day summary */
+  .bstats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 12px 14px 0;
+  }
+  .bstat {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 7px 12px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+  }
+  .bstat b { font-family: var(--display); font-size: 17px; font-weight: 700; color: var(--ink); margin-right: 4px; }
+  .bstat.alert b { color: var(--red); }
+  .lanebar { height: 5px; background: var(--rule-soft); border-radius: 3px; overflow: hidden; margin: 4px 0 8px; }
+  .lanebar span { display: block; height: 100%; background: var(--green); }
+
   .hazard {
     font-size: 12px;
     color: #7a4a00;
@@ -1129,6 +1254,7 @@
 
 <!-- ============ BOARD ============ -->
 <section class="screen on" id="screen-board">
+  <div class="bstats" id="boardStats"></div>
   <div class="board" id="boardRoot">
     <div class="rail">
       <div class="col-head">
@@ -1307,7 +1433,7 @@
     <div class="warnbox" style="margin:14px 0 4px">
       <div class="wt">Real in this demo, versus drawn</div>
       <p><b>Actually works:</b> assigning stops, advancing status, a customer request landing on the
-        board, drag-and-drop assignment, the after-cutoff override, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the map, the Reports tab math, and the CSV download &mdash; that
+        board, the day-summary strip, drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the map, the Reports tab math, and the CSV download &mdash; that
         file is real.
         <br><b>Placeholder:</b> the addresses on the map are invented, nothing is reporting live GPS,
         every dollar figure is a Dallas market average rather than Ranger's own rate, and compactor fill percentages are invented. The brand colors, though, are Ranger's real ones.</p>
@@ -1321,6 +1447,8 @@
       <li><b>Blocked and contaminated stops go to the office, and stop there.</b> The alert bar tells dispatch, and a human decides. What we don't know: does a contaminated load get re-quoted, refused, or hauled at a penalty rate? That's a pricing policy, not a software feature.</li>
       <li><b>Live load wait-time billing is a guess at a mechanism.</b> "Billable after 30 minutes" is invented. Whether Ranger bills wait time at all, and at what increment, is a discovery question.</li>
       <li><b>The yard and the field talk both ways now.</b> A completed pickup returns the can to yard stock automatically; a TBD delivery pulls one out. Compactor receiver boxes still don't round-trip — the demo assumes the same box always comes back.</li>
+      <li><b>The customer's service history is canned.</b> The dated rows are invented; only jobs completed during this demo session are real. In the build, history derives from completed orders — including the delivery photo the customer can open when someone disputes where the can was set.</li>
+      <li><b>The status timeline shows five clean steps.</b> Real orders reschedule, block, and bounce. What the customer should see when a stop goes sideways — honest "we hit a problem" or a quiet delay — is a customer-service policy Ranger has to pick.</li>
       <li><b>The DivertScan card is a teaser, not an integration.</b> The diversion numbers on Reports are invented. The real design is an API between two separate systems — a Dalmex weigh-in auto-closes the dispatch order — and it is deliberately not built yet. LEED reporting itself stays DivertScan's job, full stop.</li>
       <li><b>The geofence stamp is faked.</b> On a completed stop the demo stamps the can's known coordinates; the real build stamps the phone's GPS at the moment of the tap. Same screen, different truth.</li>
       <li><b>Tipping fee entry assumes one fee per stop, typed by the driver.</b> If Ranger runs house accounts at facilities and gets a monthly statement instead of per-load tickets, this field changes shape.</li>
@@ -1439,6 +1567,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       capBody: 'photo of the can in place, and the scale weight if you crossed the scale. The office bills from this.',
       tons: 'Net tons off the ticket',
       noStops: 'No stops assigned. Check with the office.',
+      nav: 'Navigate', callOfc: 'Call office',
       tonsRec: t => `${t} net tons recorded`,
       dryLabel: 'Dry run — nothing hauled',
       canLabel: 'Can'
@@ -1456,6 +1585,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       capBody: 'foto de la caja en su lugar, y el peso si pasó por la báscula. De esto factura la oficina.',
       tons: 'Toneladas netas del boleto',
       noStops: 'No hay paradas asignadas. Hable con la oficina.',
+      nav: 'Navegar', callOfc: 'Llamar oficina',
       tonsRec: t => `${t} toneladas netas registradas`,
       dryLabel: 'Viaje en falso — no se cargó nada',
       canLabel: 'Caja'
@@ -1467,10 +1597,12 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     { id:'W-0388', type:'delivery', can:'12',  size:'30 yd', material:'C&D',
       customer:'Vaquero Builders', contact:'(214) 555-0119',
       site:'4400 Elm St', window:'7–9a', driver:'d1', seq:1, status:'complete',
+      times:{ dispatched:'7:04 AM', on_site:'7:32 AM', complete:'8:15 AM' },
       note:'Set behind the fence on the gravel pad.' },
     { id:'W-0391', type:'swap', can:'27', size:'30 yd', material:'roofing',
       customer:'Bluebonnet Roofing', contact:'(214) 555-0143',
       site:'9312 Skillman St', window:'9–11a', driver:'d1', seq:2, status:'on_site',
+      times:{ dispatched:'8:50 AM', on_site:'9:21 AM' },
       note:'Tear-off crew on site. Call the super before you pull.' },
     { id:'W-0396', type:'pickup', can:'04', size:'15 yd', material:'MSW',
       customer:'Northaven Property Mgmt', contact:'(972) 555-0188',
@@ -1480,6 +1612,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     { id:'W-0389', type:'delivery', can:'31', size:'15 yd', material:'concrete',
       customer:'Elm Fork Concrete', contact:'(469) 555-0102',
       site:'1820 S Lamar St', window:'7–9a', driver:'d2', seq:1, status:'dispatched',
+      times:{ dispatched:'7:15 AM' },
       note:'Yard opens at 7. Ask for Danny.' },
     { id:'W-0394', type:'relocate', can:'19', size:'30 yd', material:'C&D',
       customer:'Trinity Ridge Homes', contact:'(214) 555-0155',
@@ -1560,6 +1693,26 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     { num:'C-3', box:'34 yd receiver', site:'6301 Gaston Ave', customer:'Lakewood Market Hall',
       fill:95, lastHaul:'Jul 29', schedule:'On call', lat:32.8180, lng:-96.7500 }
   ];
+  // Past service per account — what the customer sees as their history. Canned
+  // demo data; the real build derives this from completed orders.
+  const HISTORY = {
+    'Bluebonnet Roofing': [
+      { d:'Jul 30', what:'Swap — 30 yd, 9312 Skillman St', t:'3.10 T', photo:true },
+      { d:'Jul 14', what:'Delivery — 30 yd, 8720 Ferndale Rd', t:'—', photo:true },
+    ],
+    'Elm Fork Concrete': [
+      { d:'Aug 2', what:'Pickup — 15 yd, 740 N Industrial Blvd', t:'6.80 T', photo:true },
+      { d:'Jul 21', what:'Dump & return — 15 yd, 3311 Oak Lawn Ave', t:'7.25 T', photo:true },
+    ],
+    'Casa Linda Remodel': [
+      { d:'Aug 8', what:'Delivery — 15 yd, 1100 Commerce St', t:'—', photo:true },
+    ],
+    'Lakewood Market Hall': [
+      { d:'Jul 29', what:'Compactor haul — C-3, 6301 Gaston Ave', t:'8.90 T', photo:true },
+      { d:'Jul 8',  what:'Compactor haul — C-3, 6301 Gaston Ave', t:'9.20 T', photo:true },
+    ],
+  };
+
   // Each account gets its own tokenized URL — no password, no account to manage.
   const CUSTOMERS = [
     { id:'c1', name:'Bluebonnet Roofing',  contact:'Marcus Webb',  phone:'(214) 555-0143' },
@@ -1645,6 +1798,18 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }
     $('railList').innerHTML = html;
 
+    const all = ORDERS.filter(o => true);
+    const doneCt = all.filter(o => o.status === 'complete').length;
+    const onTrucks = all.filter(o => o.driver && o.status !== 'complete').length;
+    const excCt = all.filter(o => o.exception).length;
+    $('boardStats').innerHTML = `
+      <div class="bstat"><b>${all.length}</b> orders today</div>
+      <div class="bstat"><b>${onTrucks}</b> on trucks</div>
+      <div class="bstat"><b>${reqs.length + rail.length}</b> waiting</div>
+      <div class="bstat"><b>${doneCt}</b> done</div>
+      ${excCt ? `<div class="bstat alert"><b>${excCt}</b> need the office</div>` : ''}
+      <div class="bstat"><b>${DRIVERS.length}</b> trucks out</div>`;
+
     $('boardRoot').classList.toggle('assigning', !!picked);
     $('pickHint').textContent = picked
       ? 'Now pick the truck'
@@ -1659,6 +1824,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
           <div class="col-sub">${esc(d.name)}</div>
         </div>
         <div class="lane-meta">${done} of ${stops.length} done</div>
+        <div class="lanebar"><span style="width:${stops.length ? Math.round(done / stops.length * 100) : 0}%"></span></div>
         <button class="lane-drop" data-assign="${d.id}">Add to ${esc(d.truck)}</button>
         ${stops.length ? stops.map(cardHTML).join('')
           : `<div class="empty">No stops yet.</div>`}
@@ -1734,6 +1900,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
             <p class="card-site">${esc(o.site)}</p>
             <div class="card-cust">${esc(o.customer)} &middot; <a class="tapcall" href="tel:${o.contact.replace(/\D/g,'')}">${esc(o.contact)}</a></div>
             <div class="card-spec">${esc(o.size)} ${esc(o.material)} &middot; ${esc(o.window)}</div>
+            ${o.status !== 'complete' ? `<a class="navlink" target="_blank" rel="noopener" href="https://maps.google.com/?q=${encodeURIComponent(o.site + ', Dallas TX')}">${L.nav} &rarr;</a>` : ''}
+            ${o.times ? `<div class="stamps">${['dispatched','on_site','complete'].filter(k => o.times[k]).map(k => (k === 'dispatched' ? 'Out' : k === 'on_site' ? 'On site' : 'Done') + ' ' + o.times[k]).join(' &middot; ')}</div>` : ''}
             <div class="card-note">${esc(o.note)}</div>
             ${SITE_NOTES[o.site] ? `<div class="hazard">&#9888; Site note: ${esc(SITE_NOTES[o.site])}</div>` : ''}
             ${o.exception ? `<div class="booked" style="color:var(--red);background:var(--red-bg)">${o.exception === 'blocked' ? L.blockedLabel : L.contamLabel} — ${lang==='es'?'la oficina fue avisada':'office has been alerted'}</div>` : ''}
@@ -1749,6 +1917,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }).join('') : `<div class="stop"><div class="empty">${L.noStops}</div></div>`;
 
     $('phone').innerHTML = `<div class="phone-head">
+        <a class="callofc" href="tel:4694603220">${L.callOfc}</a>
         <div class="who">${esc(d.name)}</div>
         <div class="cnt">${esc(d.truck)} &middot; ${L.stopsLeft(left)}</div>
       </div>${body}`;
@@ -1798,6 +1967,17 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       <button class="ask-btn primary" data-send="1">Send ${kind} request</button>
       <button class="ask-btn" data-cancelreq="1">Cancel</button>
     </div>`;
+  }
+
+  function tlHTML(o) {
+    const steps = ['Received', 'Scheduled', 'On the truck', 'On site', 'Done'];
+    const idx = o.status === 'requested' ? 0
+      : (o.status === 'unassigned' || o.status === 'assigned') ? 1
+      : o.status === 'dispatched' ? 2
+      : o.status === 'on_site' ? 3 : 4;
+    return `<div class="tl">${steps.map((st, i) =>
+      `<div class="st ${i < idx ? 'done' : i === idx ? 'now' : ''}"><span class="sl">${st}</span></div>`
+    ).join('')}</div>`;
   }
 
   function renderCust() {
@@ -1872,16 +2052,49 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
           </div>
         </div>`;
 
+    const active = ORDERS.filter(o => o.customer === c.name && o.status !== 'complete');
+    const activeHTML = active.length ? active.map(o => `
+      <div class="crow">
+        <div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap">
+          <b style="font-family:var(--display);font-size:14px;letter-spacing:.05em;text-transform:uppercase">${o.type === 'service' ? 'Compactor haul' : esc(o.type)}</b>
+          <span style="font-size:12.5px;color:var(--ink-soft)">${esc(o.site)} &middot; ${esc(o.window)}</span>
+          ${o.can ? `<span style="font-family:var(--mono);font-size:11px;color:var(--ink-faint)">can ${esc(o.can)}</span>` : ''}
+        </div>
+        ${tlHTML(o)}
+      </div>`).join('') : '';
+
+    const hist = (HISTORY[c.name] || []);
+    const doneNow = ORDERS.filter(o => o.customer === c.name && o.status === 'complete' && o.source === 'customer');
+    const histHTML = (hist.length || doneNow.length) ? `
+      <div class="eyebrow" style="margin:16px 0 4px">Your service history</div>
+      ${doneNow.map(o => `<div class="histrow"><span class="hd">Today</span>
+        <span>${esc(o.type)} — ${esc(o.size)}, ${esc(o.site)}</span>
+        <span class="ht">${o.tons ? o.tons + ' T' : ''} ${'&#10003; photo'}</span></div>`).join('')}
+      ${hist.map(h => `<div class="histrow"><span class="hd">${esc(h.d)}</span>
+        <span>${esc(h.what)}</span>
+        <span class="ht">${h.t !== '—' ? h.t + ' &middot; ' : ''}&#10003; photo</span></div>`).join('')}` : '';
+
     $('custBody').innerHTML = `
+      <div class="custpage">
+      <div class="cust-head">
+        <div class="cw">Ranger<span> &middot; </span>Waste Management</div>
+        <div class="ct">Roll-off &amp; compactor service &middot; DFW &middot; order before 4 PM for same-day</div>
+      </div>
+      <div class="cust-body">
       <div class="token-strip">
         <div class="who">${esc(c.name)}</div>
         <div class="can-cust">${esc(c.contact)} &middot; ${esc(c.phone)}</div>
         <div class="how">Opened from your Ranger link &middot; no password &middot; expires in 30 days</div>
       </div>
+      ${activeHTML ? `<div class="eyebrow" style="margin-bottom:8px">In progress</div>${activeHTML}` : ''}
       ${myComps.length ? `<div class="eyebrow" style="margin-bottom:8px">Your compactors</div>${compRows}` : ''}
       ${mine.length ? `<div class="eyebrow" style="margin:16px 0 8px">Your cans right now</div>${rows}` : ''}
       ${!mine.length && !myComps.length ? `<div class="empty">Nothing at your sites today.</div>` : ''}
-      ${newCan}`;
+      ${newCan}
+      ${histHTML}
+      </div>
+      <div class="cust-foot">Questions? Call <a href="tel:4694603220">469-460-3220</a> &middot; Ranger Waste Management LLC &middot; Dallas, TX</div>
+      </div>`;
   }
 
   // DALLAS MARKET AVERAGES — NOT RANGER'S RATES.
@@ -2398,6 +2611,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }
 
     o.status = FLOW[i + 1];
+    o.times = o.times || {};
+    o.times[o.status] = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
     // A completed final pickup puts the can back in the yard — the two lists talk now.
     if (o.status === 'complete' && o.type === 'pickup' && o.can && !o.dryRun) {
