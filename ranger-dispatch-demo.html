@@ -86,6 +86,79 @@
     white-space: nowrap;
   }
   .wordmark span { color: var(--amber); }
+  .hazard {
+    font-size: 12px;
+    color: #7a4a00;
+    background: var(--amber-bg);
+    border: 1px solid var(--brand-peach);
+    border-radius: 2px;
+    padding: 6px 8px;
+    margin-top: 6px;
+  }
+  .tapcall { color: var(--slate); text-decoration: none; border-bottom: 1px dotted var(--slate); }
+  .gpsstamp { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); margin-top: 4px; }
+
+  .rptgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  .stat {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 12px 13px;
+  }
+  .stat .n {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1;
+    display: block;
+  }
+  .stat .n.bad { color: var(--red); }
+  .stat .n.warn { color: #A85A22; }
+  .stat .l {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 11.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: block;
+    margin-top: 5px;
+  }
+  .leakrow {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: baseline;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 10px 13px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .leakrow .amt { font-family: var(--mono); font-weight: 600; min-width: 80px; text-align: right; }
+  .leakrow .how { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
+  .nudge {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--brand-accent);
+    border-radius: 3px;
+    padding: 11px 13px;
+    margin-bottom: 9px;
+  }
+  .nudge .nt {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .nudge p { margin: 4px 0 9px; font-size: 12.5px; color: var(--ink-soft); }
+
   .topphone {
     font-family: var(--mono);
     font-size: 12.5px;
@@ -997,6 +1070,7 @@
     <button class="tab" role="tab" aria-selected="false" data-screen="cust">Customer</button>
     <button class="tab" role="tab" aria-selected="false" data-screen="cans">Equipment</button>
     <button class="tab" role="tab" aria-selected="false" data-screen="bill">Billing</button>
+    <button class="tab" role="tab" aria-selected="false" data-screen="reports">Reports</button>
   </div>
   <div class="demoflag">Demo data</div>
 </div>
@@ -1125,6 +1199,36 @@
   </div>
 </section>
 
+<!-- ============ REPORTS ============ -->
+<section class="screen" id="screen-reports">
+  <div class="bill-wrap">
+    <div class="col-head">
+      <div class="col-title">Turnover &amp; leakage</div>
+      <div class="col-sub">the numbers a roll-off business runs on</div>
+    </div>
+
+    <div class="warnbox">
+      <div class="wt">Dollar figures below are Dallas market averages</div>
+      <p>Same placeholder rates as the Billing tab — $20/extra day, $90/ton overage, $135 dry run.
+        Ranger's real rates replace these. The counts and days are real demo state.</p>
+    </div>
+
+    <div class="rptgrid" id="rptTurnover"></div>
+
+    <div class="col-head" style="margin-top:24px">
+      <div class="col-title">Money on the table</div>
+      <div class="col-sub" id="rptLeakSub"></div>
+    </div>
+    <div id="rptLeakage"></div>
+
+    <div class="col-head" style="margin-top:24px">
+      <div class="col-title">Nudges to send</div>
+      <div class="col-sub">stubbed — no real texts until 10DLC clears</div>
+    </div>
+    <div id="rptNudges"></div>
+  </div>
+</section>
+
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.
@@ -1141,7 +1245,7 @@
     <div class="warnbox" style="margin:14px 0 4px">
       <div class="wt">Real in this demo, versus drawn</div>
       <p><b>Actually works:</b> assigning stops, advancing status, a customer request landing on the
-        board, compactor hauls, tonnage capture, dry runs, English/Spanish, the map, and the CSV download &mdash; that
+        board, compactor hauls, tonnage + tipping fee capture, dry runs, site notes that persist for the next driver, English/Spanish, the map, the Reports tab math, and the CSV download &mdash; that
         file is real.
         <br><b>Placeholder:</b> the addresses on the map are invented, nothing is reporting live GPS,
         every dollar figure is a Dallas market average rather than Ranger's own rate, and compactor fill percentages are invented. The brand colors, though, are Ranger's real ones.</p>
@@ -1153,6 +1257,9 @@
       <li><b>The 15 yard has no published weight allowance.</b> The 20 and 30 list 4 and 5 tons. The 15 lists none, so billing shows a gap instead of a number. Easy question, real hole.</li>
       <li><b>The 4 PM cutoff is treated as a hard line.</b> The red bar counts down to it and anything requested after it is flagged next-day. In practice a dispatcher probably squeezes in a 4:20 call for a good customer. If so the rule needs an override, not just a flag.</li>
       <li><b>Brand colors are a placeholder.</b> Set at the top of the file in four variables. Nothing was matched to their actual site — send the hex codes and it repaints.</li>
+      <li><b>The geofence stamp is faked.</b> On a completed stop the demo stamps the can's known coordinates; the real build stamps the phone's GPS at the moment of the tap. Same screen, different truth.</li>
+      <li><b>Tipping fee entry assumes one fee per stop, typed by the driver.</b> If Ranger runs house accounts at facilities and gets a monthly statement instead of per-load tickets, this field changes shape.</li>
+      <li><b>The day-6 nudge assumes customers want to be nudged.</b> Some accounts (long construction jobs) will find it noise. Needs a per-customer switch.</li>
       <li><b>GPS on cans is assumed, not built.</b> Trackers run roughly $50 to $200 of hardware per unit plus a monthly cellular fee on each one. On a 30-can fleet the subscriptions alone run into the hundreds per month, forever. Truck GPS is nearly free by comparison &mdash; the driver's phone already knows where it is.</li>
       <li><b>Spanish covers the app, not the content.</b> Buttons and labels switch. The dispatcher's note about the gate code stays in whatever language it was typed in. Auto-translating job instructions is a good way to get a can set in the wrong place.</li>
       <li><b>One dispatcher, one board.</b> If two or three people take orders at once, the board needs locking and a change log.</li>
@@ -1348,6 +1455,13 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   // at the site, the receiver box gets pulled to the landfill and returned. No swap, no
   // dwell clock, no free days. Fill % here is assumed to be REPORTED BY THE SITE, not
   // read off a sensor — fill monitors are hardware with a monthly fee, see the guesses list.
+  // Notes that stick to the SITE, not the work order. Any driver flags it; every
+  // later driver on that site sees it. Stolen from Box Tracker Driver — safety feature.
+  const SITE_NOTES = {
+    '12040 Coit Rd': 'Low wire on the north side — approach from the dock.',
+    '6100 Greenville Ave': 'Alley access only. Tight turn for a 30.',
+  };
+
   const COMPACTORS = [
     { num:'C-1', box:'34 yd receiver', site:'12040 Coit Rd', customer:'Northaven Property Mgmt',
       fill:82, lastHaul:'Aug 4', schedule:'On call', lat:32.9200, lng:-96.7700 },
@@ -1479,6 +1593,16 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
                <input id="tons-${o.id}" type="number" step="0.01" min="0" placeholder="4.20"
                  style="width:120px;font-family:var(--mono);font-size:13px;padding:7px;border:1px solid var(--rule);border-radius:2px">
              </div>
+             <div style="margin-top:9px">
+               <span style="font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:5px">${lang==='es'?'Cuota de báscula pagada ($)':'Tipping fee paid at facility ($)'}</span>
+               <input id="tip-${o.id}" type="number" step="0.01" min="0" placeholder="68.50"
+                 style="width:120px;font-family:var(--mono);font-size:13px;padding:7px;border:1px solid var(--rule);border-radius:2px">
+             </div>
+             <div style="margin-top:9px">
+               <span style="font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:5px">${lang==='es'?'Avisar al próximo chofer (opcional)':'Flag for the next driver (optional)'}</span>
+               <input id="haz-${o.id}" type="text" placeholder="${lang==='es'?'p. ej. portón se atora':'e.g. gate sticks, dog on site'}"
+                 style="width:100%;font-family:var(--body);font-size:13px;padding:7px;border:1px solid var(--rule);border-radius:2px;box-sizing:border-box">
+             </div>
            </div>`
         : '';
       const extra = o.status === 'on_site'
@@ -1491,11 +1615,14 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
           <div class="card-main">
             <div class="card-type">${L[o.type]}</div>
             <p class="card-site">${esc(o.site)}</p>
-            <div class="card-cust">${esc(o.customer)} &middot; ${esc(o.contact)}</div>
+            <div class="card-cust">${esc(o.customer)} &middot; <a class="tapcall" href="tel:${o.contact.replace(/\D/g,'')}">${esc(o.contact)}</a></div>
             <div class="card-spec">${esc(o.size)} ${esc(o.material)} &middot; ${esc(o.window)}</div>
             <div class="card-note">${esc(o.note)}</div>
+            ${SITE_NOTES[o.site] ? `<div class="hazard">&#9888; Site note: ${esc(SITE_NOTES[o.site])}</div>` : ''}
             ${o.status === 'complete' && o.dryRun ? `<div class="booked" style="color:var(--red);background:var(--red-bg)">${L.dryLabel}</div>` : ''}
             ${o.status === 'complete' && o.tons ? `<div class="booked">${L.tonsRec(o.tons)}</div>` : ''}
+            ${o.status === 'complete' && o.tip ? `<div class="booked">${lang==='es'?'Cuota de báscula':'Tipping fee paid'}: $${o.tip}</div>` : ''}
+            ${o.status === 'complete' && o.gps ? `<div class="gpsstamp">&#128205; ${o.gps}</div>` : ''}
           </div>
           ${placard(o.can, o.size, L.canLabel)}
         </div>
@@ -1774,6 +1901,65 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
 
   function beforeCutoff() { return new Date().getHours() < CUTOFF_HOUR; }
 
+  function renderReports() {
+    // Turnover: derived from the same demo state everything else uses.
+    const total = CANS.length;
+    const over7 = CANS.filter(k => k.days >= 7).length;
+    const over14 = CANS.filter(k => k.days >= 14).length;
+    const avgDays = (CANS.reduce((s, k) => s + k.days, 0) / total).toFixed(1);
+    const done = ORDERS.filter(o => o.status === 'complete');
+
+    $('rptTurnover').innerHTML = `
+      <div class="stat"><span class="n">${total}</span><span class="l">cans in the field</span></div>
+      <div class="stat"><span class="n">${avgDays}</span><span class="l">avg days on site</span></div>
+      <div class="stat"><span class="n ${over7 ? 'warn' : ''}">${over7}</span><span class="l">past 7 free days</span></div>
+      <div class="stat"><span class="n ${over14 ? 'bad' : ''}">${over14}</span><span class="l">two weeks or more</span></div>`;
+
+    // Leakage: dollars sitting in the demo state right now, at market-average rates.
+    const extraDays = CANS.filter(k => k.days > RATES.freeDays)
+      .reduce((s, k) => s + (k.days - RATES.freeDays), 0);
+    const rentalDollars = extraDays * RATES.extraDay;
+    let overTons = 0;
+    done.forEach(o => {
+      const inc = RATES.includedTons[o.size];
+      if (o.tons && inc) overTons += Math.max(0, parseFloat(o.tons) - inc);
+    });
+    const overageDollars = +(overTons * RATES.overagePerTon).toFixed(2);
+    const dryRuns = done.filter(o => o.dryRun).length;
+    const dryDollars = dryRuns * RATES.dryRun;
+    const tipPaid = done.reduce((s, o) => s + (o.tip ? parseFloat(o.tip) : 0), 0);
+    const totalLeak = rentalDollars + overageDollars + dryDollars;
+
+    $('rptLeakSub').textContent = money(totalLeak) + ' billable right now';
+    $('rptLeakage').innerHTML = `
+      <div class="leakrow"><span>Extra days past the ${RATES.freeDays} free days, across the fleet</span>
+        <span class="how">${extraDays} days &times; ${money(RATES.extraDay)}</span>
+        <span class="amt">${money(rentalDollars)}</span></div>
+      <div class="leakrow"><span>Tonnage over allowance on completed stops</span>
+        <span class="how">${overTons.toFixed(2)} tons &times; ${money(RATES.overagePerTon)}</span>
+        <span class="amt">${money(overageDollars)}</span></div>
+      <div class="leakrow"><span>Dry runs recorded (billable trip fees)</span>
+        <span class="how">${dryRuns} &times; ${money(RATES.dryRun)}</span>
+        <span class="amt">${money(dryDollars)}</span></div>
+      <div class="leakrow" style="border-left:4px solid var(--green)">
+        <span><b>Tipping fees paid out at facilities</b> (the cost side — gross profit needs Ranger's rates)</span>
+        <span class="how">from driver capture</span>
+        <span class="amt">${money(tipPaid)}</span></div>`;
+
+    // Nudges
+    const day6 = CANS.filter(k => k.days >= RATES.freeDays - 1 && !ORDERS.find(o => o.can === k.num && o.status !== 'complete'));
+    const todays = ORDERS.filter(o => o.driver && (o.status === 'assigned' || o.status === 'dispatched'));
+    $('rptNudges').innerHTML = `
+      <div class="nudge"><div class="nt">Free-days ending</div>
+        <p>${day6.length} can${day6.length === 1 ? '' : 's'} at day ${RATES.freeDays - 1}+ with nothing scheduled.
+        One text turns silent extra days into agreed billable ones.</p>
+        <button class="ask-btn primary" data-day6="1">Preview the ${day6.length} text${day6.length === 1 ? '' : 's'}</button></div>
+      <div class="nudge"><div class="nt">Morning access check</div>
+        <p>${todays.length} stop${todays.length === 1 ? '' : 's'} on trucks today. "We're coming — cars moved,
+        gate open?" Two prevented dry runs a month covers the subscription.</p>
+        <button class="ask-btn primary" data-morning="1">Preview the ${todays.length} text${todays.length === 1 ? '' : 's'}</button></div>`;
+  }
+
   function renderCutoff() {
     const now = new Date();
     const el = $('cutoff');
@@ -1974,7 +2160,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }).join('');
   }
 
-  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderCans(); renderBill(); }
+  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderCans(); renderBill(); renderReports(); }
 
   function toast(label, msg) {
     const el = document.createElement('div');
@@ -1994,6 +2180,16 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       const el = document.getElementById('tons-' + o.id);
       const v = el ? parseFloat(el.value) : NaN;
       if (!isNaN(v) && v > 0) o.tons = v.toFixed(2);
+      const tp = document.getElementById('tip-' + o.id);
+      const tv = tp ? parseFloat(tp.value) : NaN;
+      if (!isNaN(tv) && tv > 0) o.tip = tv.toFixed(2);
+      const hz = document.getElementById('haz-' + o.id);
+      if (hz && hz.value.trim()) SITE_NOTES[o.site] = hz.value.trim();
+      // Geofence stamp: in the demo this is the can's known coords; in the real
+      // build it is the phone's GPS at the moment of the tap.
+      const k = CANS.find(x => x.num === o.can) || COMPACTORS.find(x => x.num === o.can);
+      const now = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      o.gps = (k ? k.lat.toFixed(4) + ', ' + k.lng.toFixed(4) : 'no fix') + ' \u00b7 ' + now;
     }
 
     o.status = FLOW[i + 1];
@@ -2136,6 +2332,18 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const lg = t.closest('[data-lang]');
     if (lg) { lang = lg.dataset.lang; renderDriver(); return; }
 
+    if (t.closest('[data-day6]')) {
+      CANS.filter(k => k.days >= RATES.freeDays - 1 && !ORDERS.find(o => o.can === k.num && o.status !== 'complete'))
+        .slice(0, 4).forEach(k =>
+          toast('Would text customer', `${k.customer}: your ${RATES.freeDays} free days on the can at ${k.site} end soon. Reply EXTEND to keep it ($${RATES.extraDay}/day) or PICKUP and we'll come get it.`));
+      return;
+    }
+    if (t.closest('[data-morning]')) {
+      ORDERS.filter(o => o.driver && (o.status === 'assigned' || o.status === 'dispatched'))
+        .slice(0, 4).forEach(o =>
+          toast('Would text customer', `${o.customer}: Ranger is coming to ${o.site} today (${o.window}). Please make sure the area is clear and any gate is open.`));
+      return;
+    }
     if (t.closest('#csvBtn')) { exportCSV(); return; }
     if (t.closest('#qbBtn'))    { $('qbSheet').classList.add('on'); return; }
     if (t.closest('#emailBtn')) { $('emailSheet').classList.add('on'); return; }
