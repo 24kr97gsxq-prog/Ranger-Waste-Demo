@@ -1423,12 +1423,12 @@
         <li><b>A rate sheet per customer.</b> The screen now runs on Dallas market averages, which is a placeholder, not an answer. Ranger prices repeat contractors differently from one-off homeowners, and roofing differently from concrete. Their real sheet replaces every number here.</li>
         <li><b>Weight tickets tied to the stop.</b> The driver can now type tons on the Driver tab, but a typed number is not a scale ticket. Disputes get settled with the ticket, not the app.</li>
         <li><b>A drop date per can</b> so rental days are countable. The Cans out tab fakes this.</li>
-        <li><b>Which QuickBooks.</b> Online and Desktop are different products with different APIs. This is a fork in the road, not a detail.</li>
+        <li><b>Which QuickBooks.</b> Still a discovery question, but no longer a fork: the export now writes CSV or Desktop IIF, switched on the Setup tab. Their accountant validates the first IIF import — that format fails silently.</li>
         <li><b>Who invoices today</b> — Box Tracker, a bookkeeper, or Ranger's office in QuickBooks directly. If billing already works, replacing it is all risk and no gain.</li>
         <li><b>Invoice numbering and tax.</b> Numbers cannot collide or skip, and Texas taxability on hauling versus disposal is a question for their accountant, not for me.</li>
       </ol>
       <div class="exportrow">
-        <button class="ask-btn primary" id="csvBtn">Download QuickBooks CSV</button>
+        <button class="ask-btn primary" id="csvBtn">Download for QuickBooks</button>
         <button class="ask-btn" id="qbBtn">About the QuickBooks export</button>
         <button class="ask-btn" id="emailBtn">About emailing invoices</button>
       </div>
@@ -1559,7 +1559,7 @@
     <div class="warnbox" style="margin:14px 0 4px">
       <div class="wt">Real in this demo, versus drawn</div>
       <p><b>Actually works:</b> assigning stops, advancing status, a customer request landing on the
-        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, and the CSV download &mdash; that
+        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, the signature pad, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, and the CSV download &mdash; that
         file is real.
         <br><b>Placeholder:</b> the addresses on the map are invented, nothing is reporting live GPS,
         every dollar figure is a Dallas market average rather than Ranger's own rate, and compactor fill percentages are invented. The brand colors, though, are Ranger's real ones.</p>
@@ -1584,11 +1584,11 @@
       <li><b>Spanish covers the app, not the content.</b> Buttons and labels switch. The dispatcher's note about the gate code stays in whatever language it was typed in. Auto-translating job instructions is a good way to get a can set in the wrong place.</li>
       <li><b>One dispatcher, one board.</b> If two or three people take orders at once, the board needs locking and a change log.</li>
       <li><b>A day at a time.</b> No week view, no tomorrow's pre-builds. Real dispatch often works a rolling 10 days out.</li>
-      <li><b>A driver's stops are ordered but not routed.</b> Dispatcher decides sequence by hand. No mileage, no time windows honoured.</li>
+      <li><b>Stops re-sequence with arrows now, but nothing routes.</b> The dispatcher can move a stop up or down a truck's day in one tap. Deliberate stop: no automatic route optimization — naive routing produces sequences a driver immediately knows are dumber than his own judgment, and that costs credibility everywhere else.</li>
       <li><b>Seven order types now</b> — delivery, swap, pickup, relocate, dump &amp; return, live load, compactor haul, plus dry runs. Still guessed: whether that's the full set. Ask the dispatcher what else they say on the phone that isn't on this list.</li>
       <li><b>TBD cans get assigned on the truck now.</b> A delivery with no can number asks the driver which can they grabbed from the yard, offers only ready cans of the right size, and moves it from yard stock to the field on completion. Still guessed: whether that's actually how Ranger loads out, or whether the dispatcher assigns at the desk.</li>
-      <li><b>Status now branches</b> — blocked, contaminated, and dry run exist alongside the happy path. Still missing: rescheduled. A customer calling to push a stop to Thursday currently means delete-and-retype, and that's probably a daily event.</li>
-      <li><b>A stop now closes with photo, tons, tipping fee, and a flag for the next driver.</b> Still missing: a customer signature. Whether Ranger ever needs one — residential driveway drops are the usual case — is a discovery question, not a default.</li>
+      <li><b>Rescheduled exists now</b> — Push to later moves an order off today without retyping it, keeping notes and history. Still guessed: how far out Ranger actually books (the demo has one bucket, "later this week"; real dispatch may work a rolling 10 days with real dates).</li>
+      <li><b>A stop can now close with a signature</b> — finger-drawn on the driver's phone, optional, stored with the stop. Still guessed: when Ranger actually wants one required. Residential driveway drops with damage-waiver exposure are the obvious case; forcing it on every commercial swap would just slow drivers down.</li>
       <li><b>Drivers always have signal.</b> Nothing here works offline. If there are dead zones on their routes, this whole design changes.</li>
       <li><b>Customer texts fire at dispatch and at completion.</b> Two moments, guessed. Which moments actually stop the phone from ringing — and which just annoy — is something only Ranger's call log knows.</li>
       <li><b>Customers get a link, not a login.</b> No password, no account to manage, works for a site super who will never sign up for anything. If Ranger has property managers who need to see months of history across a dozen sites, that argument flips.</li>
@@ -1695,6 +1695,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       tons: 'Net tons off the ticket',
       noStops: 'No stops assigned. Check with the office.',
       nav: 'Navigate', callOfc: 'Call office',
+      sig: 'Customer signature (optional)', sigClear: 'Clear', sigRec: 'Signature on file',
       tonsRec: t => `${t} net tons recorded`,
       dryLabel: 'Dry run — nothing hauled',
       canLabel: 'Can'
@@ -1713,6 +1714,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       tons: 'Toneladas netas del boleto',
       noStops: 'No hay paradas asignadas. Hable con la oficina.',
       nav: 'Navegar', callOfc: 'Llamar oficina',
+      sig: 'Firma del cliente (opcional)', sigClear: 'Borrar', sigRec: 'Firma registrada',
       tonsRec: t => `${t} toneladas netas registradas`,
       dryLabel: 'Viaje en falso — no se cargó nada',
       canLabel: 'Caja'
@@ -1881,13 +1883,20 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
            <button class="no" data-decline="${o.id}">Decline</button>
            <span class="src">${esc(o.requestedAt)}</span>`;
     } else if (o.status === 'unassigned') {
-      foot = `<span class="time">${esc(o.window)} window</span>
-              ${o.source === 'customer' ? '<span class="src">customer request</span>' : ''}`;
+      foot = o.deferred
+        ? `<span class="time">${esc(o.window)}</span>
+           <button class="pull" data-unresched="${o.id}">Bring back to today</button>`
+        : `<span class="time">${esc(o.window)} window</span>
+           ${o.source === 'customer' ? '<span class="src">customer request</span>' : ''}
+           <button class="pull" data-resched="${o.id}" style="margin-left:auto">Push to later</button>`;
     } else {
       foot = `<button class="chip s-${o.status}" data-advance="${o.id}"
            ${o.status === 'complete' ? 'disabled' : ''}>${LABEL[o.status]}</button>
          <span class="time">${esc(o.window)}</span>
-         <button class="pull" data-pull="${o.id}">Pull back</button>`;
+         <button class="pull" data-up="${o.id}" title="Move earlier">&#9650;</button>
+         <button class="pull" data-down="${o.id}" title="Move later">&#9660;</button>
+         <button class="pull" data-pull="${o.id}">Pull back</button>
+         <button class="pull" data-resched="${o.id}">Push</button>`;
     }
 
     const draggable = (o.status === 'unassigned' || (o.driver && o.status !== 'complete')) ? 'draggable="true" data-drag="' + o.id + '"' : '';
@@ -1906,7 +1915,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
 
   function renderBoard() {
     const reqs = ORDERS.filter(o => o.status === 'requested');
-    const rail = ORDERS.filter(o => o.status === 'unassigned');
+    const rail = ORDERS.filter(o => o.status === 'unassigned' && !o.deferred);
     $('railCount').innerHTML = reqs.length
       ? reqs.length + ' to approve &middot; ' + rail.length + ' waiting'
       : rail.length + ' waiting';
@@ -1922,6 +1931,10 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       : `<div class="empty">Nothing waiting. Every order on the board is on a truck.</div>`;
     if (tomorrow.length) {
       html += `<div class="rail-section">Tomorrow — came in after cutoff</div>` + tomorrow.map(cardHTML).join('');
+    }
+    const deferred = ORDERS.filter(o => o.deferred);
+    if (deferred.length) {
+      html += `<div class="rail-section">Rescheduled — later this week</div>` + deferred.map(cardHTML).join('');
     }
     $('railList').innerHTML = html;
 
@@ -2009,6 +2022,12 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
                <input id="haz-${o.id}" type="text" placeholder="${lang==='es'?'p. ej. portón se atora':'e.g. gate sticks, dog on site'}"
                  style="width:100%;font-family:var(--body);font-size:13px;padding:7px;border:1px solid var(--rule);border-radius:2px;box-sizing:border-box">
              </div>
+             <div style="margin-top:9px">
+               <span style="font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:5px">${L.sig}</span>
+               <canvas class="sigpad" id="sig-${o.id}" width="560" height="140"
+                 style="width:100%;height:70px;border:1px dashed var(--rule);border-radius:2px;background:var(--field);touch-action:none;display:block"></canvas>
+               <button class="pull" data-sigclear="${o.id}" style="margin-top:5px">${L.sigClear}</button>
+             </div>
            </div>`
         : '';
       const extra = o.status === 'on_site'
@@ -2035,6 +2054,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
             ${o.status === 'complete' && o.dryRun ? `<div class="booked" style="color:var(--red);background:var(--red-bg)">${L.dryLabel}</div>` : ''}
             ${o.status === 'complete' && o.tons ? `<div class="booked">${L.tonsRec(o.tons)}</div>` : ''}
             ${o.status === 'complete' && o.tip ? `<div class="booked">${lang==='es'?'Cuota de báscula':'Tipping fee paid'}: $${o.tip}</div>` : ''}
+            ${o.status === 'complete' && o.signed ? `<div class="booked">&#9997; ${L.sigRec}</div>` : ''}
             ${o.status === 'complete' && o.gps ? `<div class="gpsstamp">&#128205; ${o.gps}</div>` : ''}
           </div>
           ${placard(o.can, o.size, L.canLabel)}
@@ -2398,6 +2418,14 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
 
     // Connections & bolt-ons — statuses, not secrets
     $('setupSubs').innerHTML = `
+      <div class="togglerow">
+        <div><b>QuickBooks export format</b>
+          <div class="tdesc">Which QuickBooks Ranger runs is still a discovery question — both
+            formats are covered either way. IIF is Desktop's old, unforgiving import: have their
+            accountant validate the first file before trusting it.</div></div>
+        <button class="tswitch" data-qbfmt="csv" aria-pressed="${qbFmt === 'csv'}">CSV</button>
+        <button class="tswitch" data-qbfmt="iif" aria-pressed="${qbFmt === 'iif'}" style="margin-left:6px">IIF (Desktop)</button>
+      </div>
       <div class="subrow"><span class="sstat stub">Stubbed</span>
         <span><span class="sname">Texting (Twilio)</span>
           <div class="sdesc">Configured server-side by the vendor. Nothing sends until A2P 10DLC
@@ -2700,13 +2728,32 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       });
     });
 
-    const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+    let payload, fname, mime;
+    if (qbFmt === 'iif') {
+      const L2 = ['!TRNS\tTRNSTYPE\tDATE\tACCNT\tNAME\tAMOUNT\tMEMO',
+                  '!SPL\tTRNSTYPE\tDATE\tACCNT\tNAME\tAMOUNT\tMEMO', '!ENDTRNS'];
+      done.forEach(o => {
+        const items = lineItems(o).filter(li => li.amount !== null);
+        const total = items.reduce((s2, li) => s2 + li.amount, 0);
+        L2.push(['TRNS', 'INVOICE', '08/18/2026', 'Accounts Receivable', o.customer,
+          total.toFixed(2), o.id + ' — ' + o.site].join('\t'));
+        items.forEach(li => L2.push(['SPL', 'INVOICE', '08/18/2026', 'Hauling Income',
+          o.customer, (-li.amount).toFixed(2), li.label].join('\t')));
+        L2.push('ENDTRNS');
+      });
+      payload = L2.join('\n'); fname = 'ranger-billing-2026-08-18.iif'; mime = 'text/plain';
+    } else {
+      payload = rows.join('\n'); fname = 'ranger-billing-2026-08-18.csv'; mime = 'text/csv';
+    }
+    const blob = new Blob([payload], { type: mime });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'ranger-billing-2026-08-18.csv';
+    a.download = fname;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    toast("Exported", `${rows.length - 1} line items at Dallas market average. Swap in Ranger rates before this touches a real customer.`);
+    toast('Exported ' + qbFmt.toUpperCase(), qbFmt === 'iif'
+      ? 'Desktop IIF written. Have the accountant validate the first import — IIF fails silently.'
+      : `${rows.length - 1} line items at Dallas market average. Swap in Ranger rates before this touches a real customer.`);
   }
 
   function fillClass(f) { return f >= 90 ? 'late' : f >= 70 ? 'warn' : ''; }
@@ -2791,6 +2838,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       if (!isNaN(tv) && tv > 0) o.tip = tv.toFixed(2);
       const hz = document.getElementById('haz-' + o.id);
       if (hz && hz.value.trim()) SITE_NOTES[o.site] = hz.value.trim();
+      const sg = document.getElementById('sig-' + o.id);
+      if (sg && sg.dataset.drawn) o.signed = true;
       // TBD can: driver tells the system which can actually left the yard.
       const cp = document.getElementById('canpick-' + o.id);
       if (!o.can && cp && cp.value) {
@@ -2824,10 +2873,10 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }
 
     if (o.status === 'dispatched' && NOTIFY.dispatched) {
-      toast('Would text customer', `${o.customer}: your ${o.size} ${o.type} for ${o.site} is on the way.`);
+      toast('Would text ' + o.contact, `Ranger Waste: your ${o.size} ${o.type}${o.can ? ' (can ' + o.can + ')' : ''} is on the way to ${o.site}. Reply STOP to opt out.`);
     }
     if (o.status === 'complete' && NOTIFY.complete) {
-      toast('Would text customer', `${o.customer}: ${o.type} complete at ${o.site}. Photo attached.`);
+      toast('Would text ' + o.contact, `Ranger Waste: ${o.type} complete at ${o.site}${o.can ? ', can ' + o.can : ''}. Photo attached. Questions? 469-460-3220`);
     }
     render();
   }
@@ -2969,6 +3018,36 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       render();
       return;
     }
+    const rs = t.closest('[data-resched]');
+    if (rs) {
+      const o = ORDERS.find(x => x.id === rs.dataset.resched);
+      o.deferred = true; o.driver = null; o.seq = 0; o.status = 'unassigned';
+      o.window = 'Later this week';
+      toast('Rescheduled', `${o.id} pushed to later. Notes, history, and the site record stay with it.`);
+      render();
+      return;
+    }
+    const urs = t.closest('[data-unresched]');
+    if (urs) {
+      const o = ORDERS.find(x => x.id === urs.dataset.unresched);
+      o.deferred = false; o.window = 'flex';
+      render();
+      return;
+    }
+    const up = t.closest('[data-up]');
+    const dn = t.closest('[data-down]');
+    if (up || dn) {
+      const o = ORDERS.find(x => x.id === (up || dn).dataset[up ? 'up' : 'down']);
+      const sibs = ORDERS.filter(x => x.driver === o.driver).sort((a2, b2) => a2.seq - b2.seq);
+      const i2 = sibs.indexOf(o);
+      const j2 = up ? i2 - 1 : i2 + 1;
+      if (j2 >= 0 && j2 < sibs.length) {
+        const tmp = o.seq; o.seq = sibs[j2].seq; sibs[j2].seq = tmp;
+        render();
+      }
+      return;
+    }
+
     const resolve = t.closest('[data-resolve]');
     if (resolve) {
       const o = ORDERS.find(x => x.id === resolve.dataset.resolve);
@@ -2990,10 +3069,18 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const lg = t.closest('[data-lang]');
     if (lg) { lang = lg.dataset.lang; renderDriver(); return; }
 
+    const qf = t.closest('[data-qbfmt]');
+    if (qf) { qbFmt = qf.dataset.qbfmt; renderSetup(); return; }
     const nt = t.closest('[data-notify]');
     if (nt) {
       NOTIFY[nt.dataset.notify] = !NOTIFY[nt.dataset.notify];
       renderSetup();
+      return;
+    }
+    const sc = t.closest('[data-sigclear]');
+    if (sc) {
+      const cv = document.getElementById('sig-' + sc.dataset.sigclear);
+      if (cv) { cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); delete cv.dataset.drawn; }
       return;
     }
     const mu = t.closest('[data-mute]');
@@ -3070,6 +3157,32 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }
   });
 
+  // Signature pad: pointer-event drawing on any .sigpad canvas.
+  let sigCtx = null;
+  document.addEventListener('pointerdown', e => {
+    const cv = e.target.closest('.sigpad');
+    if (!cv) return;
+    cv.setPointerCapture(e.pointerId);
+    sigCtx = cv.getContext('2d');
+    sigCtx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--ink').trim() || '#181925';
+    sigCtx.lineWidth = 2.5;
+    sigCtx.lineCap = 'round';
+    const r = cv.getBoundingClientRect();
+    sigCtx.beginPath();
+    sigCtx.moveTo((e.clientX - r.left) * (cv.width / r.width), (e.clientY - r.top) * (cv.height / r.height));
+    cv.dataset.drawn = '1';
+    e.preventDefault();
+  });
+  document.addEventListener('pointermove', e => {
+    if (!sigCtx) return;
+    const cv = e.target.closest('.sigpad');
+    if (!cv) return;
+    const r = cv.getBoundingClientRect();
+    sigCtx.lineTo((e.clientX - r.left) * (cv.width / r.width), (e.clientY - r.top) * (cv.height / r.height));
+    sigCtx.stroke();
+  });
+  document.addEventListener('pointerup', () => { sigCtx = null; });
+
   // Rate edits recalculate the money math live (change fires on blur, so typing isn't interrupted)
   document.addEventListener('change', e => {
     const r = e.target.closest('[data-rate]');
@@ -3086,6 +3199,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
 
   // Which events send a customer text. Flipped from the Setup tab.
   const NOTIFY = { dispatched: true, complete: true, day6: true, morning: true };
+  let qbFmt = 'csv';   // 'csv' (universal / Online import) or 'iif' (Desktop)
 
   let dragId = null;
 
