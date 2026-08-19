@@ -38,6 +38,8 @@
     --amber-ink: #A85A22;
     --empty-bg:  rgba(255,255,255,.5);
     --field:     #ffffff;
+    --mk-can-bg:  var(--brand-dark);
+    --mk-can-ink: #ffffff;
     --red-bg:    #FBEAE7;
 
     --display: "Barlow Condensed", "Arial Narrow", ui-sans-serif, sans-serif;
@@ -66,9 +68,13 @@
     --slate-bg:  #1F2A3C;
     --red:       #E06A5A;
     --red-bg:    #3A211D;
+    --mk-can-bg:  #E9EAF2;
+    --mk-can-ink: #181925;
   }
   /* dim the light map tiles at night; markers live in a different pane and stay crisp */
-  body[data-theme="dark"] .leaflet-tile-pane { filter: brightness(.7) contrast(1.05) saturate(.75); }
+  body[data-theme="dark"] .leaflet-tile-pane {
+    filter: invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.55);
+  }
   body[data-theme="dark"] .leaflet-container { background: #14151F; }
   body[data-theme="dark"] .excbar .fix { background: var(--panel); color: var(--red); }
 
@@ -1236,8 +1242,8 @@
   #mapBox.schematic { height: auto; }
   .leaflet-container { background: var(--rule-soft); font-family: var(--body); }
   .mk-can {
-    background: var(--steel);
-    color: #fff;
+    background: var(--mk-can-bg);
+    color: var(--mk-can-ink);
     font-family: var(--display);
     font-weight: 700;
     font-size: 15px;
@@ -1246,11 +1252,11 @@
     width: 30px;
     height: 24px;
     border-radius: 2px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.4);
-    border: 1.5px solid #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.45);
+    border: 1.5px solid var(--mk-can-ink);
   }
-  .mk-can.warn { background: #F38C4C; }
-  .mk-can.late { background: var(--red); }
+  .mk-can.warn { background: #F38C4C; color: var(--brand-deep); border-color: var(--brand-deep); }
+  .mk-can.late { background: var(--red); color: #fff; border-color: #fff; }
   .mk-truck {
     background: var(--amber);
     color: var(--steel);
@@ -1457,7 +1463,7 @@
       <div id="mapBox"></div>
       <div class="legend">
         <span><i style="background:var(--amber)"></i>truck</span>
-        <span><i style="background:var(--steel)"></i>can, under 7 days</span>
+        <span><i style="background:var(--mk-can-bg);border:1px solid var(--mk-can-ink)"></i>can, under 7 days</span>
         <span><i style="background:#F38C4C"></i>7 to 13 days</span>
         <span><i style="background:var(--red)"></i>14 days or more</span>
         <span><i style="background:var(--brand-peach)"></i>compactor</span>
@@ -1593,7 +1599,7 @@
     <div class="warnbox" style="margin:14px 0 4px">
       <div class="wt">Real in this demo, versus drawn</div>
       <p><b>Actually works:</b> assigning stops, advancing status, a customer request landing on the
-        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, the signature pad, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, the live Payback calculator, and the CSV download &mdash; that
+        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, the signature pad, the contamination bill-through, the overweight warning, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, the live Payback calculator, and the CSV download &mdash; that
         file is real.
         <br><b>Placeholder:</b> the addresses on the map are invented, nothing is reporting live GPS,
         every dollar figure is a Dallas market average rather than Ranger's own rate, and compactor fill percentages are invented. The brand colors, though, are Ranger's real ones.</p>
@@ -1604,10 +1610,11 @@
       <li><b>Compactor pricing is blank on purpose.</b> Haul, disposal and monthly rental all read "ask Ranger". Compactor deals are negotiated per site and there is no meaningful market average to borrow, so a gap is more honest than a number.</li>
       <li><b>The 15 yard has no published weight allowance.</b> The 20 and 30 list 4 and 5 tons. The 15 lists none, so billing shows a gap instead of a number. Easy question, real hole.</li>
       <li><b>The 4 PM cutoff now has an override.</b> After-cutoff requests land in a Tomorrow section, and the dispatcher can hit "Squeeze in today" for a good customer. What's still guessed: whether Ranger's policy allows that at all, and who's allowed to press it.</li>
-      <li><b>Blocked and contaminated stops go to the office, and stop there.</b> The alert bar tells dispatch, and a human decides. What we don't know: does a contaminated load get re-quoted, refused, or hauled at a penalty rate? That's a pricing policy, not a software feature.</li>
+      <li><b>Contaminated loads can now bill through</b> — the office alert bar offers "Bill penalty through &amp; complete," which closes the stop and puts the facility fee on the invoice with the driver's photo and GPS stamp as proof. Still Ranger's policy, not ours: the $250 default is invented (facility penalties run roughly $150–500), and whether they pass it straight through, mark it up, or eat it for a good customer is a pricing decision.</li>
+      <li><b>The overweight warning fires at 10 tons, which is made up.</b> The real threshold is per-truck legal payload — GVW minus tare — and Ranger knows it per Hino. Editable on Setup; the warning warns, it never blocks a driver who has to move anyway.</li>
       <li><b>Live load wait-time billing is a guess at a mechanism.</b> "Billable after 30 minutes" is invented. Whether Ranger bills wait time at all, and at what increment, is a discovery question.</li>
       <li><b>The yard and the field talk both ways now.</b> A completed pickup returns the can to yard stock automatically; a TBD delivery pulls one out. Compactor receiver boxes still don't round-trip — the demo assumes the same box always comes back.</li>
-      <li><b>The Payback tab's five inputs are invented.</b> Two dry runs a month, fifteen uncaptured days, three missed tons, five office hours, $25 loaded cost — all placeholders chosen to be conservative. The formulas and the rate sheet are real; the inputs come from Ranger's invoice, call log, and a month of actual capture. Do not quote the total until they do.</li>
+      <li><b>Every Payback input is invented</b> — dry runs, days, tons, hours, contamination loads, lost cans, and the $5,000 replacement cost (new can prices run from under $1k used to $10k for a big new box). All placeholders chosen to be conservative. The formulas and the rate sheet are real; the inputs come from Ranger's invoice, call log, and a month of actual capture. Do not quote the total until they do.</li>
       <li><b>Who's allowed to touch Setup is undecided.</b> Rates and texting switches are powerful — a driver must never see them, and maybe not every dispatcher either. In the build this is a role (admin vs dispatcher vs driver) enforced in the database, not a hidden tab. Also unasked: quiet hours — should a job that finishes at 8 PM text the customer at 8 PM?</li>
       <li><b>The customer's service history is canned.</b> The dated rows are invented; only jobs completed during this demo session are real. In the build, history derives from completed orders — including the delivery photo the customer can open when someone disputes where the can was set.</li>
       <li><b>The status timeline shows five clean steps.</b> Real orders reschedule, block, and bounce. What the customer should see when a stop goes sideways — honest "we hit a problem" or a quiet delay — is a customer-service policy Ranger has to pick.</li>
@@ -2308,6 +2315,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     freeDays:      7,
     extraDay:      20,
     dryRun:        135,
+    contamFee:     250,   // facility contamination penalty passed through — INVENTED default, Ranger's policy decides
+    maxTons:       10,    // overweight warning threshold — INVENTED; real number is per-truck GVW, ask Ranger
     relocate:      null
   };
   const CUTOFF_HOUR = 16;   // Ranger promises same-day delivery on orders placed before 4 PM
@@ -2387,6 +2396,10 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
                      rate: RATES.extraDay, amount: null, missing: true });
       }
     }
+    if (o.contamBilled) {
+      items.push({ label: 'Contamination penalty passed through — driver photo + GPS stamp as proof',
+                   qty: '1 load', rate: RATES.contamFee, amount: RATES.contamFee });
+    }
     return items;
   }
 
@@ -2446,6 +2459,10 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
         <input type="number" step="1" min="0" value="${RATES.overagePerTon}" data-rate="overagePerTon"></div>
       <div class="rule-card"><label>Dry run fee ($)</label>
         <input type="number" step="1" min="0" value="${RATES.dryRun}" data-rate="dryRun"></div>
+      <div class="rule-card"><label>Contamination pass-through ($)</label>
+        <input type="number" step="1" min="0" value="${RATES.contamFee}" data-rate="contamFee"></div>
+      <div class="rule-card"><label>Overweight warning at (tons)</label>
+        <input type="number" step="0.5" min="0" value="${RATES.maxTons}" data-rate="maxTons"></div>
     </div>
     <p style="font-size:12px;color:var(--ink-faint);margin:10px 0 0">Prefilled with Dallas market
       averages. Type Ranger's real numbers and every screen updates — that's the whole point:
@@ -2572,6 +2589,12 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       { k: 'adminHrs', label: 'Office hours saved — no phone-tag, no re-typing tickets',
         unit: 'hours per week', rate: null, math: v => v * ROI.hourly * 52,
         how: v => `${v}/wk × $${ROI.hourly}/hr × 52` },
+      { k: 'contamLoads', label: 'Contamination penalties passed through with photo proof',
+        unit: 'loads per month', rate: RATES.contamFee, math: v => v * RATES.contamFee * 12,
+        how: v => `${v}/mo × ${money(RATES.contamFee)} × 12` },
+      { k: 'lostCans', label: 'Cans not lost — every drop carries a location and photo',
+        unit: 'cans per year', rate: null, math: v => v * ROI.canCost,
+        how: v => `${v}/yr × $${ROI.canCost.toLocaleString()}` },
     ];
     let roiAnnual = 0;
     $('rptRoi').innerHTML = roiRows.map(r => {
@@ -2588,6 +2611,11 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
         <span class="amt">${money(annual)}</span>
       </div>`;
     }).join('') + `
+      <div class="leakrow"><span>Replacement cost per can used above
+        <div style="margin-top:5px"><input type="number" min="0" step="100" value="${ROI.canCost}" data-roi="canCost"
+          style="width:90px;font-family:var(--mono);font-size:13px;padding:5px;border:1px solid var(--rule);border-radius:2px">
+          <span style="font-family:var(--mono);font-size:11px;color:var(--ink-faint)"> $ per can</span></div></span>
+        <span class="how">new 15\u201330 yd runs wide \u2014 ask Ranger</span><span class="amt"></span></div>
       <div class="leakrow"><span>Office hourly cost used above
         <div style="margin-top:5px"><input type="number" min="0" step="1" value="${ROI.hourly}" data-roi="hourly"
           style="width:74px;font-family:var(--mono);font-size:13px;padding:5px;border:1px solid var(--rule);border-radius:2px">
@@ -2651,7 +2679,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     el.innerHTML = excs.map(o => `<div class="excbar">
       <span>&#9888; ${o.exception === 'blocked' ? 'BLOCKED' : 'OVERWEIGHT / CONTAMINATED'}</span>
       <span style="font-weight:400">${esc(o.site)} &middot; ${esc(o.customer)} &middot; ${esc(o.id)}</span>
-      <button class="fix" data-resolve="${o.id}">Office handled it</button>
+      ${o.exception === 'contaminated' ? `<button class="fix" data-contambill="${o.id}">Bill penalty through &amp; complete</button>` : ''}
+      <button class="fix" data-resolve="${o.id}" ${o.exception === 'contaminated' ? 'style="margin-left:8px"' : ''}>Office handled it</button>
     </div>`).join('');
   }
 
@@ -2876,7 +2905,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       `<div class="can" style="border-left:4px solid var(--brand-accent)">
         <div style="grid-column:1/-1">
         <div class="can-where">Fleet utilization: ${util}%</div>
-        <div class="can-cust">${CANS.length} of ${total} cans out earning &middot; ${YARD_CANS.filter(k=>k.status==='repair').length} in repair.
+        <div class="can-cust">${CANS.length} of ${total} cans out earning &middot; ${YARD_CANS.filter(k=>k.status==='repair').length} in repair
+        &middot; <b>0 unaccounted for</b> — every can carries a last-known location and drop photo.
         Box Tracker's whole homepage is this number — turnover is what a roll-off business runs on.</div>
         </div></div>`;
   }
@@ -2926,7 +2956,11 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     if (o.status === 'on_site') {
       const el = document.getElementById('tons-' + o.id);
       const v = el ? parseFloat(el.value) : NaN;
-      if (!isNaN(v) && v > 0) o.tons = v.toFixed(2);
+      if (!isNaN(v) && v > 0) {
+        o.tons = v.toFixed(2);
+        if (v > RATES.maxTons) toast('\u26a0 Overweight',
+          `${v} tons is over the ${RATES.maxTons}-ton warning threshold. DOT exposure — office should know before this truck hits a weigh station.`);
+      }
       const tp = document.getElementById('tip-' + o.id);
       const tv = tp ? parseFloat(tp.value) : NaN;
       if (!isNaN(tv) && tv > 0) o.tip = tv.toFixed(2);
@@ -3156,6 +3190,18 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       return;
     }
 
+    const cb = t.closest('[data-contambill]');
+    if (cb) {
+      const o = ORDERS.find(x => x.id === cb.dataset.contambill);
+      delete o.exception;
+      o.contamBilled = true;
+      o.status = 'complete';
+      o.times = o.times || {};
+      o.times.complete = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      toast('Would text ' + o.contact, `Ranger Waste: the load at ${o.site} was flagged contaminated at the facility. The ${money(RATES.contamFee)} facility penalty passes through on your invoice — photo and timestamp attached.`);
+      render();
+      return;
+    }
     const resolve = t.closest('[data-resolve]');
     if (resolve) {
       const o = ORDERS.find(x => x.id === resolve.dataset.resolve);
@@ -3319,7 +3365,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
 
   // ROI calculator inputs — EVERY ONE IS A PLACEHOLDER GUESS. The discovery call and a
   // month of real capture replace them. The formulas are the pitch, not these numbers.
-  const ROI = { dryRuns: 2, extraDays: 15, overTons: 3, adminHrs: 5, hourly: 25 };
+  const ROI = { dryRuns: 2, extraDays: 15, overTons: 3, adminHrs: 5, hourly: 25, contamLoads: 1, lostCans: 1, canCost: 5000 };
 
   let dragId = null;
 
