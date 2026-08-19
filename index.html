@@ -1638,7 +1638,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.16.0 &middot; Aug 19, 2026 &middot; 1:40 AM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.17.1 &middot; Aug 19, 2026 &middot; 2:00 AM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -1944,19 +1944,19 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   // demo data; the real build derives this from completed orders.
   const HISTORY = {
     'Bluebonnet Roofing': [
-      { d:'Jul 30', what:'Swap — 30 yd, 9312 Skillman St', t:'3.10 T', photo:true },
-      { d:'Jul 14', what:'Delivery — 30 yd, 8720 Ferndale Rd', t:'—', photo:true },
+      { d:'Jul 30', what:'Swap — 30 yd, 9312 Skillman St (W-0361)', t:'3.10 T', photo:true },
+      { d:'Jul 14', what:'Delivery — 30 yd, 8720 Ferndale Rd (W-0342)', t:'—', photo:true },
     ],
     'Elm Fork Concrete': [
-      { d:'Aug 2', what:'Pickup — 15 yd, 740 N Industrial Blvd', t:'6.80 T', photo:true },
-      { d:'Jul 21', what:'Dump & return — 15 yd, 3311 Oak Lawn Ave', t:'7.25 T', photo:true },
+      { d:'Aug 2', what:'Pickup — 15 yd, 740 N Industrial Blvd (W-0369)', t:'6.80 T', photo:true },
+      { d:'Jul 21', what:'Dump & return — 15 yd, 3311 Oak Lawn Ave (W-0350)', t:'7.25 T', photo:true },
     ],
     'Casa Linda Remodel': [
-      { d:'Aug 8', what:'Delivery — 15 yd, 1100 Commerce St', t:'—', photo:true },
+      { d:'Aug 8', what:'Delivery — 15 yd, 1100 Commerce St (W-0378)', t:'—', photo:true },
     ],
     'Lakewood Market Hall': [
-      { d:'Jul 29', what:'Compactor haul — C-3, 6301 Gaston Ave', t:'8.90 T', photo:true },
-      { d:'Jul 8',  what:'Compactor haul — C-3, 6301 Gaston Ave', t:'9.20 T', photo:true },
+      { d:'Jul 29', what:'Compactor haul — C-3, 6301 Gaston Ave (W-0359)', t:'8.90 T', photo:true },
+      { d:'Jul 8',  what:'Compactor haul — C-3, 6301 Gaston Ave (W-0331)', t:'9.20 T', photo:true },
     ],
   };
 
@@ -2198,7 +2198,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
             <div class="card-type">${L[o.type]}</div>
             <p class="card-site">${esc(o.site)}</p>
             <div class="card-cust">${esc(o.customer)} &middot; <a class="tapcall" href="tel:${o.contact.replace(/\D/g,'')}">${esc(o.contact)}</a></div>
-            <div class="card-spec">${esc(o.size)} ${esc(o.material)} &middot; ${esc(o.window)}</div>
+            <div class="card-spec">${esc(o.id)} &middot; ${esc(o.size)} ${esc(o.material)} &middot; ${esc(o.window)}</div>
             ${o.status !== 'complete' ? `<a class="navlink" target="_blank" rel="noopener" href="https://maps.google.com/?q=${encodeURIComponent(o.site + ', Dallas TX')}">${L.nav} &rarr;</a>` : ''}
             ${o.times ? `<div class="stamps">${['dispatched','on_site','complete'].filter(k => o.times[k]).map(k => (k === 'dispatched' ? 'Out' : k === 'on_site' ? 'On site' : 'Done') + ' ' + o.times[k]).join(' &middot; ')}</div>` : ''}
             <div class="card-note">${esc(o.note)}</div>
@@ -2319,7 +2319,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       let tail;
       if (busy) {
         tail = `<div class="booked">${busy.status === 'requested'
-          ? 'Request received — Ranger is confirming a time'
+          ? 'Request received — job ' + busy.id + ' — Ranger is confirming a time'
           : 'Already on the schedule: ' + busy.type + ', ' + busy.window}</div>`;
       } else if (openReq && openReq.can === k.num) {
         tail = reqFormHTML(openReq.type);
@@ -2382,6 +2382,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       <div class="crow">
         <div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap">
           <b style="font-family:var(--display);font-size:14px;letter-spacing:.05em;text-transform:uppercase">${o.type === 'service' ? 'Compactor haul' : esc(o.type)}</b>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--ink-faint)">${esc(o.id)}</span>
           <span style="font-size:12.5px;color:var(--ink-soft)">${esc(o.site)} &middot; ${esc(o.window)}</span>
           ${o.can ? `<span style="font-family:var(--mono);font-size:11px;color:var(--ink-faint)">can ${esc(o.can)}</span>` : ''}
         </div>
@@ -2393,7 +2394,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const histHTML = (hist.length || doneNow.length) ? `
       <div class="eyebrow" style="margin:16px 0 4px">Your service history</div>
       ${doneNow.map(o => `<div class="histrow"><span class="hd">Today</span>
-        <span>${esc(o.type)} — ${esc(o.size)}, ${esc(o.site)}</span>
+        <span>${esc(o.type)} — ${esc(o.size)}, ${esc(o.site)} <span style="font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)">${esc(o.id)}</span></span>
         <span class="ht">${o.tons ? o.tons + ' T' : ''} ${'&#10003; photo'}</span></div>`).join('')}
       ${hist.map(h => `<div class="histrow"><span class="hd">${esc(h.d)}</span>
         <span>${esc(h.what)}</span>
@@ -3268,11 +3269,11 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
 
     if (o.status === 'dispatched' && NOTIFY.dispatched) {
       if (inQuietHours()) toast('Quiet hours — text queued', `Holds until ${NOTIFY.quietTo}:00 AM: on-the-way text to ${o.contact}.`);
-      else toast('Would text ' + o.contact, `Ranger Waste: your ${o.size} ${o.type}${o.can ? ' (can ' + o.can + ')' : ''} is on the way to ${o.site}. Reply STOP to opt out.`);
+      else toast('Would text ' + o.contact, `Ranger Waste: your ${o.size} ${o.type} is on the way to ${o.site} — job ${o.id}${o.can ? ', can ' + o.can : ''}. Reply STOP to opt out.`);
     }
     if (o.status === 'complete' && NOTIFY.complete) {
       if (inQuietHours()) toast('Quiet hours — text queued', `Holds until ${NOTIFY.quietTo}:00 AM: completion text to ${o.contact}, photo attached.`);
-      else toast('Would text ' + o.contact, `Ranger Waste: ${o.type} complete at ${o.site}${o.can ? ', can ' + o.can : ''}. Photo attached. Questions? 469-460-3220`);
+      else toast('Would text ' + o.contact, `Ranger Waste: ${o.type} complete at ${o.site} — job ${o.id}${o.can ? ', can ' + o.can : ''}. Photo attached. Questions? 469-460-3220`);
     }
     render();
   }
@@ -3290,8 +3291,9 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const note = (noteEl && noteEl.value.trim()) || 'No extra instructions.';
     const k = openReq.can ? CANS.find(x => x.num === openReq.can) : null;
 
+    const newId = 'W-0' + (++reqSeq);
     ORDERS.push({
-      id: 'W-0' + (++reqSeq),
+      id: newId,
       type: openReq.type,
       can: openReq.can,
       size: openReq.size,
@@ -3312,7 +3314,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const kind = openReq.type;
     openReq = null;
     reqWhen = 'Today';
-    toast('Would text customer', `${c.contact}: got your ${kind} request — we will confirm a time shortly.`);
+    toast('Would text ' + c.phone, `Ranger Waste: got your ${kind} request — job ${newId}. We will confirm a time shortly. Keep that number handy if you call.`);
     render();
   }
 
