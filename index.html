@@ -1559,6 +1559,12 @@
     <div class="bstats" id="ageChips" style="padding:0 0 10px"></div>
     <div class="eyebrow">In a real build this is derived from order history, not typed in</div>
     <div class="cans-grid" id="cansGrid"></div>
+
+    <div class="col-head" style="margin-top:22px">
+      <div class="col-title">Fleet &amp; compliance</div>
+      <div class="col-sub">every date below is INVENTED — the alarm mechanism is the feature</div>
+    </div>
+    <div id="fleetBox"></div>
   </div>
 </section>
 
@@ -1662,7 +1668,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.21.0 &middot; Aug 19, 2026 &middot; 3:35 AM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.22.0 &middot; Aug 19, 2026 &middot; 3:55 AM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -1692,6 +1698,7 @@
       <li><b>Live load wait-time billing is a guess at a mechanism.</b> "Billable after 30 minutes" is invented. Whether Ranger bills wait time at all, and at what increment, is a discovery question.</li>
       <li><b>The yard and the field talk both ways now.</b> A completed pickup returns the can to yard stock automatically; a TBD delivery pulls one out. Compactor receiver boxes still don't round-trip — the demo assumes the same box always comes back.</li>
       <li><b>The handoff log assumes shifts exist.</b> If one dispatcher runs the whole day, it's still useful as tomorrow-morning notes-to-self — but whether Ranger runs shifts, and who reads the log first thing, is a discovery question. In the build, notes carry the author's name; the demo has no login, so they don't.</li>
+      <li><b>Fleet &amp; compliance runs on invented paperwork.</b> Fake VINs, guessed mileage, made-up renewal dates — the mechanism (30-day amber, past-due red, everything feeding Loose Ends) is the feature. The permit list is a typical Dallas-hauler set (TxDMV/USDOT, City of Dallas franchise, IFTA, TCEQ transporter registration); which of these Ranger actually holds, and what else — county permits, bonds, franchise terms — comes from Derek's filing cabinet, not from us.</li>
       <li><b>The everything batch (v0.18) added honest stand-ins, not finished systems.</b> Stop photos are real capture but session-only (build: stored + customer-visible). QR decode, OCR, morning-check replies, truck ETA, and the Dalmex pull are labeled simulations. The offline banner is a design preview — real offline is a Service Worker, gated on the dead-zone answers. Recurring cadences are guessed. "Suggest a sequence" is nearest-first with one-tap Undo — a suggestion, never an auto-router. Per-customer rates use ONE invented example. Live QBO sync and in-app payments remain deliberate NOs with reasons on the Setup tab — represented, not faked.</li>
       <li><b>The 20% fuel &amp; environmental fee collides with Ranger's own website.</b> rangerwaste.com says NO HIDDEN FEES in capitals; the FEF is exactly the surcharge national haulers charge and independents advertise against. It's built as a visible line item and a Setup rate — set it to 0 and it vanishes. Whether charging it funds the margin or torches the positioning is the owner's call, and it should be raised in the pricing conversation, not slipped in. Overfill ($75) and prohibited-item ($25) defaults are invented; the driver captures both at the stop.</li>
       <li><b>The scale ticket now logs where it actually happens — at the facility, after the site.</b> Finishing site work on a haul-away marks the load "ticket pending"; the driver scans, types, or pulls the Dalmex weigh-in later. The camera capture is real; the OCR is simulated (the real build extracts and still makes the driver confirm — numbers never auto-bind). The Dalmex pull is the DivertScan bridge acted out: simulated here, API later. Still guessed: whether the office chases pending tickets same-day or at shift end.</li>
@@ -2830,6 +2837,15 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       items.push(['red', o.id + ' — pushed to ' + o.date + ' and that day has passed']));
     CANS.filter(k => k.days >= 14).forEach(k =>
       items.push(['red', 'Can ' + k.num + ' — ' + k.days + ' days at ' + k.site + ': bill rental or schedule the pickup']));
+    TRUCKS.forEach(tk => [['pm', 'PM service'], ['dot', 'DOT inspection'], ['reg', 'registration'], ['ins', 'insurance']].forEach(([f2, lbl]) => {
+      const days = Math.floor((new Date(tk[f2]) - new Date()) / 86400000);
+      if (days < 0) items.push(['red', tk.num + ' — ' + lbl + ' is ' + Math.abs(days) + ' days PAST due (invented date — the alarm is the feature)']);
+      else if (days <= 30) items.push(['amber', tk.num + ' — ' + lbl + ' due in ' + days + ' days']);
+    }));
+    PERMITS.forEach(pm2 => {
+      const days = Math.floor((new Date(pm2.renew) - new Date()) / 86400000);
+      if (days <= 45) items.push([days < 0 ? 'red' : 'amber', pm2.name + ' — renews in ' + days + ' days']);
+    });
     YARD_CANS.filter(k => k.status === 'repair').forEach(k =>
       items.push(['amber', 'Can ' + k.num + ' — in the yard, out of service' + (k.note ? ' (' + k.note + ')' : '')]));
     el.innerHTML = items.length
@@ -3301,11 +3317,51 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
 
   // Recurring service — cadence per unit. GUESSED: whether Ranger schedules,
   // takes calls, or waits on fill readings is discovery question #1.
+  // Fleet & compliance — EVERY value here is INVENTED (fake VINs, guessed dates).
+  // The mechanism is the feature: dates that turn amber at 30 days and red when past.
+  const TRUCKS = [
+    { num: 'Truck 12', make: 'Mack Granite (2019)', vin: 'DEMO-VIN-0012', miles: 148200, driver: 'R. Mendez',
+      pm: '2026-09-02', dot: '2026-11-14', reg: '2027-01-31', ins: '2026-12-01' },
+    { num: 'Truck 7', make: 'Peterbilt 348 (2016)', vin: 'DEMO-VIN-0007', miles: 231400, driver: 'D. Boyd',
+      pm: '2026-08-24', dot: '2026-09-05', reg: '2026-10-31', ins: '2026-12-01' },
+    { num: 'Truck 3', make: 'Kenworth T440 (2021)', vin: 'DEMO-VIN-0003', miles: 96800, driver: 'A. Salinas',
+      pm: '2026-10-12', dot: '2027-02-20', reg: '2027-01-31', ins: '2026-12-01' },
+  ];
+  // Typical Dallas-hauler compliance set — WHICH of these actually apply is a discovery question.
+  const PERMITS = [
+    { name: 'TxDMV motor carrier registration (USDOT)', renew: '2026-09-10' },
+    { name: 'City of Dallas solid waste franchise', renew: '2026-10-01' },
+    { name: 'IFTA quarterly fuel tax filing', renew: '2026-10-31' },
+    { name: 'TCEQ MSW transporter registration', renew: '2027-03-15' },
+  ];
+
+  function dueChip(iso, label) {
+    const days = Math.floor((new Date(iso) - new Date()) / 86400000);
+    const cls = days < 0 ? 'late' : days <= 30 ? 'warn' : 'ok';
+    const word = days < 0 ? Math.abs(days) + 'd PAST' : days + 'd';
+    return `<span class="dwell ${cls}" title="${iso}">${label} ${word}</span>`;
+  }
+
   const RECURRING = [
     { unit: 'C-2', cadence: 'Every other Tuesday', next: '2026-08-25' },
     { unit: 'C-1', cadence: 'On call (82% reported)', next: null },
     { unit: 'C-3', cadence: 'On call (95% — due now)', next: null },
   ];
+
+  function renderFleet() {
+    const el = $('fleetBox');
+    if (!el) return;
+    el.innerHTML = TRUCKS.map(tk => {
+      const drv = ORDERS.filter(o => o.driver === (DRIVERS.find(d => d.name === tk.driver) || {}).id);
+      return `<div class="leakrow" style="flex-wrap:wrap;gap:8px">
+        <span><b>${esc(tk.num)}</b> — ${esc(tk.make)} &middot; <span style="font-family:var(--mono);font-size:10.5px">${esc(tk.vin)}</span>
+          &middot; ${tk.miles.toLocaleString()} mi &middot; ${esc(tk.driver)}</span>
+        <span style="display:flex;gap:6px;flex-wrap:wrap">${dueChip(tk.pm, 'PM')}${dueChip(tk.dot, 'DOT insp')}${dueChip(tk.reg, 'Reg')}${dueChip(tk.ins, 'Ins')}</span>
+      </div>`;
+    }).join('') +
+    `<div class="eyebrow" style="margin:10px 0 4px">Company permits &amp; registrations — a typical Dallas-hauler set; which apply to Ranger is a discovery question</div>` +
+    PERMITS.map(pm2 => `<div class="leakrow"><span>${esc(pm2.name)}</span><span>${dueChip(pm2.renew, 'renews')}</span><span class="amt"></span></div>`).join('');
+  }
 
   function renderRecurring() {
     const el = $('recurList');
@@ -3361,7 +3417,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }).join('');
   }
 
-  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderRecurring(); renderYard(); renderCans(); renderBill(); renderReports(); renderSetup(); renderExcBar(); renderHandoff(); renderQbPreview(); renderAudit(); renderLoose(); }
+  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderRecurring(); renderYard(); renderCans(); renderBill(); renderReports(); renderSetup(); renderExcBar(); renderHandoff(); renderQbPreview(); renderAudit(); renderLoose(); renderFleet(); }
 
   function toast(label, msg) {
     const el = document.createElement('div');

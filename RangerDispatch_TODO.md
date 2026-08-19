@@ -82,6 +82,9 @@ tomorrow pre-builds · offline mode (dead zones? Sherman routes say ask hard) ·
 dry-run reason list validation · prohibited-items list per facility ·
 scale-house queue times (which facilities back up, how long — gates the
 "Queued at Scale" status + facility turnaround analytics idea) ·
+fleet paperwork (real VINs, PM schedule, inspection/registration/insurance
+dates) and the actual permit set — which of TxDMV/USDOT, Dallas franchise,
+IFTA, TCEQ apply, plus county permits and bonds ·
 customer auto-accept for trusted accounts (one-line switch, policy decision)
 
 ## 🔴 DECLINED (with reasons, on the record)
