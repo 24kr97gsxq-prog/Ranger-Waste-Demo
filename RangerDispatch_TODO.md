@@ -107,3 +107,14 @@ until inputs are Ranger's.
 Reports ("money sitting uninvoiced today") → 4 PM cutoff bar → customer
 request lands on Board → Driver flow in Spanish → close on Payback with the
 owner typing his own numbers. Dispatch board last — least differentiated.
+
+## 👤 BUYER PROFILE — DEREK (Ranger's owner)
+Extremely smart, strong business acumen. Strategy: honesty IS the pitch —
+lead with the "What we guessed" panel, flagged-invented defaults, and the
+open cost register; never quote an unverified number in front of him. Expect
+owner-grade questions (margin, bus factor, data ownership, why-not-Docket,
+the FEF vs his no-hidden-fees positioning — raise that one YOURSELF before
+he does). Expect his son (27, engineer) to do a technical diligence pass:
+repo hygiene, no keys anywhere, RLS story must hold. Prep doc:
+`RangerDispatch_Derek_Prep.md`. Close by handing HIM the iPad on the
+Payback tab — a smart buyer convinces himself with his own numbers.
