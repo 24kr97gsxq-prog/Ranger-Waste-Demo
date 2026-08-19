@@ -80,6 +80,8 @@ contamination markup-vs-pass-through policy · per-truck GVW thresholds ·
 who may press the cutoff override · default day-6 mutes · booking horizon /
 tomorrow pre-builds · offline mode (dead zones? Sherman routes say ask hard) ·
 dry-run reason list validation · prohibited-items list per facility ·
+scale-house queue times (which facilities back up, how long — gates the
+"Queued at Scale" status + facility turnaround analytics idea) ·
 customer auto-accept for trusted accounts (one-line switch, policy decision)
 
 ## 🔴 DECLINED (with reasons, on the record)

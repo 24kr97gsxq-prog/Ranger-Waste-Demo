@@ -283,6 +283,41 @@
   .pipe.now { border-style: solid; border-color: var(--brand-accent); color: var(--amber-ink); background: var(--amber-bg); }
 
   /* board day summary */
+  .handoff {
+    margin: 12px 14px 0;
+    background: var(--amber-bg);
+    border: 1px solid var(--brand-peach);
+    border-radius: 3px;
+    padding: 10px 13px;
+  }
+  .handoff .ht {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--amber-ink);
+    margin-bottom: 6px;
+  }
+  .handrow {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-size: 13px;
+    padding: 4px 0;
+  }
+  .handrow .hh { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); min-width: 56px; }
+  .handrow .pull { margin-left: auto; }
+  .handadd { display: flex; gap: 8px; margin-top: 7px; }
+  .handadd input {
+    flex: 1;
+    font-family: var(--body);
+    font-size: 13px;
+    padding: 7px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+
   .bstats {
     display: flex;
     gap: 8px;
@@ -302,6 +337,7 @@
   .bstat:hover { border-color: var(--brand-accent); }
   .bstat.active { border-color: var(--brand-accent); background: var(--amber-bg); color: var(--ink); }
   .card.dim { opacity: .22; }
+  .can.dim { opacity: .22; }
   .bstat b { font-family: var(--display); font-size: 17px; font-weight: 700; color: var(--ink); margin-right: 4px; }
   .bstat.alert b { color: var(--red); }
   .lanebar { height: 5px; background: var(--rule-soft); border-radius: 3px; overflow: hidden; margin: 4px 0 8px; }
@@ -1364,6 +1400,7 @@
 
 <!-- ============ BOARD ============ -->
 <section class="screen on" id="screen-board">
+  <div id="handoff"></div>
   <div class="bstats" id="boardStats"></div>
   <div class="board" id="boardRoot">
     <div class="rail">
@@ -1497,6 +1534,7 @@
       <div class="col-title">Cans in the field</div>
       <div class="col-sub" id="cansCount"></div>
     </div>
+    <div class="bstats" id="ageChips" style="padding:0 0 10px"></div>
     <div class="eyebrow">In a real build this is derived from order history, not typed in</div>
     <div class="cans-grid" id="cansGrid"></div>
   </div>
@@ -1596,7 +1634,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.11.0 &middot; Aug 19, 2026 &middot; 12:05 AM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.12.0 &middot; Aug 19, 2026 &middot; 12:25 AM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -1610,7 +1648,7 @@
     <div class="warnbox" style="margin:14px 0 4px">
       <div class="wt">Real in this demo, versus drawn</div>
       <p><b>Actually works:</b> assigning stops, advancing status, a customer request landing on the
-        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, the signature pad, the contamination bill-through, the overweight warning, dry-run reason codes, quiet hours, real phone-GPS stamps (with labeled fallback), date-picked rescheduling, the prohibited-items checkbox, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, the live Payback calculator, and the CSV download &mdash; that
+        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, the shift handoff log, the aging filter on the cans list, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, the signature pad, the contamination bill-through, the overweight warning, dry-run reason codes, quiet hours, real phone-GPS stamps (with labeled fallback), date-picked rescheduling, the prohibited-items checkbox, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, the live Payback calculator, and the CSV download &mdash; that
         file is real.
         <br><b>Placeholder:</b> the addresses on the map are invented, nothing is reporting live GPS,
         every dollar figure is a Dallas market average rather than Ranger's own rate, and compactor fill percentages are invented. The brand colors, though, are Ranger's real ones.</p>
@@ -1625,6 +1663,7 @@
       <li><b>The overweight warning fires at 10 tons, which is made up.</b> The real threshold is per-truck legal payload — GVW minus tare — and Ranger knows it per Hino. Editable on Setup; the warning warns, it never blocks a driver who has to move anyway.</li>
       <li><b>Live load wait-time billing is a guess at a mechanism.</b> "Billable after 30 minutes" is invented. Whether Ranger bills wait time at all, and at what increment, is a discovery question.</li>
       <li><b>The yard and the field talk both ways now.</b> A completed pickup returns the can to yard stock automatically; a TBD delivery pulls one out. Compactor receiver boxes still don't round-trip — the demo assumes the same box always comes back.</li>
+      <li><b>The handoff log assumes shifts exist.</b> If one dispatcher runs the whole day, it's still useful as tomorrow-morning notes-to-self — but whether Ranger runs shifts, and who reads the log first thing, is a discovery question. In the build, notes carry the author's name; the demo has no login, so they don't.</li>
       <li><b>Dry-run reason codes are our list, not Ranger's.</b> Blocked access, gate locked, not ready, overfilled, canceled — five guesses at why trucks roll for nothing. The dispatcher will know the real list in ten seconds. Same for the prohibited-items line on customer requests: the item list is generic; Ranger's facilities decide what actually draws a penalty.</li>
       <li><b>Every Payback input is invented</b> — dry runs, days, tons, hours, contamination loads, lost cans, and the $5,000 replacement cost (new can prices run from under $1k used to $10k for a big new box). All placeholders chosen to be conservative. The formulas and the rate sheet are real; the inputs come from Ranger's invoice, call log, and a month of actual capture. Do not quote the total until they do.</li>
       <li><b>Who's allowed to touch Setup — and Billing — is undecided.</b> Rates, texting switches, and the invoice screen are powerful; a driver must never see any of them, and maybe not every dispatcher either. In the build this is a role (admin vs dispatcher vs driver) enforced in the database, not a hidden tab. Quiet hours exist now (Setup, default 8 PM–7 AM — invented) — a late finish queues its text instead of sending. Still open: whether queued texts go out at the open of quiet-hours-end or with the morning batch.</li>
@@ -1863,6 +1902,13 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   // at the site, the receiver box gets pulled to the landfill and returned. No swap, no
   // dwell clock, no free days. Fill % here is assumed to be REPORTED BY THE SITE, not
   // read off a sensor — fill monitors are hardware with a monthly fee, see the guesses list.
+  // The shift handoff log — replaces the sticky notes and text threads dispatchers
+  // actually use between shifts. Pinned to the top of the board until dismissed.
+  const HANDOFF = [
+    { t: '6:05 AM', msg: 'C-3 at Lakewood reported 95% full — squeeze the haul in if a truck frees up.' },
+    { t: '6:10 AM', msg: 'Boyd out Thursday. Anything past Wednesday on Truck 7 needs a plan.' },
+  ];
+
   // Notes that stick to the SITE, not the work order. Any driver flags it; every
   // later driver on that site sees it. Stolen from Box Tracker Driver — safety feature.
   const SITE_NOTES = {
@@ -2718,6 +2764,23 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
         <button class="ask-btn primary" data-morning="1">Preview the ${todays.length} text${todays.length === 1 ? '' : 's'}</button></div>`;
   }
 
+  function renderHandoff() {
+    const el = $('handoff');
+    if (!HANDOFF.length) {
+      el.innerHTML = `<div class="handoff"><div class="ht">Shift handoff — clear</div>
+        <div class="handadd"><input id="handIn" placeholder="Leave a note for the next shift — access issues, overrides, promises made on the phone">
+        <button class="ask-btn primary" data-handadd="1">Pin it</button></div></div>`;
+      return;
+    }
+    el.innerHTML = `<div class="handoff">
+      <div class="ht">Shift handoff — ${HANDOFF.length} pinned for the next dispatcher</div>
+      ${HANDOFF.map((h, i) => `<div class="handrow"><span class="hh">${esc(h.t)}</span>
+        <span>${esc(h.msg)}</span>
+        <button class="pull" data-handdone="${i}">Done</button></div>`).join('')}
+      <div class="handadd"><input id="handIn" placeholder="Leave a note for the next shift — access issues, overrides, promises made on the phone">
+      <button class="ask-btn primary" data-handadd="1">Pin it</button></div></div>`;
+  }
+
   function renderExcBar() {
     const excs = ORDERS.filter(o => o.exception);
     const el = $('excbar');
@@ -2972,18 +3035,26 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }).join('');
   }
 
+  let ageFilter = 0;   // 0 = all, 7 = a week+, 14 = two weeks+
+
   function renderCans() {
     $('cansCount').textContent = CANS.length + ' cans out';
+    const n7 = CANS.filter(c => c.days >= 7).length;
+    const n14 = CANS.filter(c => c.days >= 14).length;
+    $('ageChips').innerHTML = `
+      <button class="bstat ${ageFilter === 0 ? 'active' : ''}" data-age="0"><b>${CANS.length}</b> all cans</button>
+      <button class="bstat ${ageFilter === 7 ? 'active' : ''}" data-age="7"><b>${n7}</b> a week or more — call these accounts</button>
+      <button class="bstat ${ageFilter === 14 ? 'active' : ''} ${n14 ? 'alert' : ''}" data-age="14"><b>${n14}</b> two weeks+ — billing or pickup, today</button>`;
     $('cansGrid').innerHTML = CANS.slice().sort((a, b) => b.days - a.days).map(c => {
       const cls = c.days >= 14 ? 'late' : c.days >= 7 ? 'warn' : 'ok';
-      return `<div class="can">${placard(c.num, c.size)}
+      return `<div class="can ${ageFilter && c.days < ageFilter ? 'dim' : ''}">${placard(c.num, c.size)}
         <div><div class="can-where">${esc(c.site)}</div>
         <div class="can-cust">${esc(c.customer)}</div>
         <span class="dwell ${cls}">${c.days} days on site</span></div></div>`;
     }).join('');
   }
 
-  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderYard(); renderCans(); renderBill(); renderReports(); renderSetup(); renderExcBar(); }
+  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderYard(); renderCans(); renderBill(); renderReports(); renderSetup(); renderExcBar(); renderHandoff(); }
 
   function toast(label, msg) {
     const el = document.createElement('div');
@@ -3108,6 +3179,24 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   document.addEventListener('click', e => {
     const t = e.target;
 
+    if (t.closest('[data-handadd]')) {
+      const inp = document.getElementById('handIn');
+      if (inp && inp.value.trim()) {
+        HANDOFF.push({ t: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }), msg: inp.value.trim() });
+        renderHandoff();
+      }
+      return;
+    }
+    const hd = t.closest('[data-handdone]');
+    if (hd) { HANDOFF.splice(parseInt(hd.dataset.handdone, 10), 1); renderHandoff(); return; }
+
+    const ag = t.closest('[data-age]');
+    if (ag) {
+      const v = parseInt(ag.dataset.age, 10);
+      ageFilter = (ageFilter === v) ? 0 : v;
+      renderCans();
+      return;
+    }
     const bf = t.closest('[data-bfilter]');
     if (bf) {
       const f = bf.dataset.bfilter;
