@@ -1656,7 +1656,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.18.0 &middot; Aug 19, 2026 &middot; 2:45 AM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.19.0 &middot; Aug 19, 2026 &middot; 3:00 AM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -2645,6 +2645,13 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
           <span class="bid">${esc(o.id)}</span>
           ${o.billed ? `<span class="sstat on" style="margin-left:8px">exported ${esc(o.billed)}</span>` : ''}
           <button class="pull" data-billnow="${o.id}" style="margin-left:auto">${o.ticketPending ? 'Awaiting ticket' : 'Bill now &rarr; QuickBooks'}</button>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);padding:4px 0 2px">
+          ${(o.photos || []).length ? `<span>&#128247; ${o.photos.length} photo${o.photos.length > 1 ? 's' : ''}</span>` : ''}
+          ${o.signed ? '<span>&#9997; signature</span>' : ''}
+          ${o.times && o.times.complete ? `<span>&#128205; completed ${esc(o.times.complete)}</span>` : ''}
+          ${o.ticketSrc ? `<span>&#127915; ${esc(o.ticketSrc)}</span>` : ''}
+          ${o.dryRun && o.dryWhy ? `<span>dry run: ${esc(o.dryWhy)}</span>` : ''}
         </div>
         ${items.map(li => `<div class="li">
           <span>${esc(li.label)}</span>
