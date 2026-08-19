@@ -1549,9 +1549,10 @@
     <div class="nudge" style="border-left-color:var(--green);margin-top:16px">
       <div class="nt">What this page becomes in production</div>
       <p>After a month live, every input above fills itself from real capture — actual dry runs
-        prevented, actual days billed, actual tons invoiced, actual office time. Same math, no
-        guesses: a monthly statement of what the software earned. That report is the renewal
-        conversation, every month, automatically.</p>
+        prevented, actual days billed, actual tons invoiced. The phone-call lever gets measured
+        too: every customer tap on the tracking link is a call that didn't ring, and the link's
+        open count is in the data. Same math, no guesses: a monthly statement of what the
+        software earned. That report is the renewal conversation, every month, automatically.</p>
     </div>
   </div>
 </section>
@@ -1595,7 +1596,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.10.0 &middot; Aug 18, 2026 &middot; 11:05 PM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.10.2 &middot; Aug 18, 2026 &middot; 11:45 PM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -2193,7 +2194,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       <span class="q">Anything we should know?</span>
       <textarea id="reqNote" placeholder="Gate codes, where to set it, who to call on site."></textarea>
       <label style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--ink-soft);margin:4px 0 10px;cursor:pointer">
-        <input type="checkbox" id="reqAck" style="margin-top:2px">
+        <input type="checkbox" id="reqAck" ${reqAckOn ? 'checked' : ''} style="margin-top:2px">
         <span>No prohibited items: no paint or liquids, no tires, no batteries, no appliances with
           freon, no hazardous waste. Loads with these get a contamination penalty from the facility,
           passed through with photo proof.</span></label>
@@ -2630,8 +2631,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       { k: 'overTons', label: 'Overage tons invoiced because the driver typed the ticket',
         unit: 'tons per month', rate: RATES.overagePerTon, math: v => v * RATES.overagePerTon * 12,
         how: v => `${v}/mo × ${money(RATES.overagePerTon)} × 12` },
-      { k: 'adminHrs', label: 'Office hours saved — no phone-tag, no re-typing tickets',
-        unit: 'hours per week', rate: null, math: v => v * ROI.hourly * 52,
+      { k: 'adminHrs', label: '"Where\u2019s my can?" calls that never ring — the customer\u2019s own tracking page and the on-the-way / completion texts answer before anyone dials. Plus tickets never retyped.',
+        unit: 'office hours per week', rate: null, math: v => v * ROI.hourly * 52,
         how: v => `${v}/wk × $${ROI.hourly}/hr × 52` },
       { k: 'contamLoads', label: 'Contamination penalties passed through with photo proof',
         unit: 'loads per month', rate: RATES.contamFee, math: v => v * RATES.contamFee * 12,
@@ -3002,8 +3003,10 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       const v = el ? parseFloat(el.value) : NaN;
       if (!isNaN(v) && v > 0) {
         o.tons = v.toFixed(2);
-        if (v > RATES.maxTons) toast('\u26a0 Overweight',
-          `${v} tons is over the ${RATES.maxTons}-ton warning threshold. DOT exposure — office should know before this truck hits a weigh station.`);
+        if (v > RATES.maxTons) toast(lang === 'es' ? '\u26a0 Sobrepeso' : '\u26a0 Overweight',
+          lang === 'es'
+            ? `${v} toneladas supera el límite de ${RATES.maxTons}. Riesgo de multa DOT — avise a la oficina antes de pasar por una báscula.`
+            : `${v} tons is over the ${RATES.maxTons}-ton warning threshold. DOT exposure — office should know before this truck hits a weigh station.`);
       }
       const tp = document.getElementById('tip-' + o.id);
       const tv = tp ? parseFloat(tp.value) : NaN;
@@ -3061,6 +3064,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }
     render();
   }
+
+  let reqAckOn = false;   // survives form re-renders (when-option taps rebuild the form)
 
   function submitRequest() {
     const ack = document.getElementById('reqAck');
@@ -3176,8 +3181,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       return;
     }
 
-    if (t.closest('[data-cancelreq]')) { openReq = null; renderCust(); return; }
-    if (t.closest('[data-send]'))      { submitRequest(); return; }
+    if (t.closest('[data-cancelreq]') && (reqAckOn = false, true)) { openReq = null; renderCust(); return; }
+    if (t.closest('[data-send]'))      { submitRequest(); reqAckOn = false; return; }
 
     // ---- dispatcher approves or declines ----
     const yes = t.closest('[data-accept]');
@@ -3418,6 +3423,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     renderBill(); renderReports(); renderCust();
   });
   document.addEventListener('change', e => {
+    if (e.target.id === 'reqAck') { reqAckOn = e.target.checked; return; }
     const dd = e.target.closest('[data-defdate]');
     if (dd) {
       const o = ORDERS.find(x => x.id === dd.dataset.defdate);
