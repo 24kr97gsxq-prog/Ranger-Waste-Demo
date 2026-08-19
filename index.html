@@ -52,8 +52,8 @@
     --rule:      #3A3D52;
     --rule-soft: #2E3145;
     --ink:       #E8E9F0;
-    --ink-soft:  #B6B9C9;
-    --ink-faint: #7E8296;
+    --ink-soft:  #C6C9D8;
+    --ink-faint: #9EA3B8;
     --brand-box: #1A1B28;
     --field:     #262838;
     --empty-bg:  rgba(255,255,255,.04);
@@ -74,6 +74,7 @@
 
   * { box-sizing: border-box; }
   input, select, textarea { background: var(--field); color: var(--ink); }
+  ::placeholder { color: var(--ink-faint); opacity: 1; }
 
   body {
     margin: 0;
@@ -977,9 +978,9 @@
   .crow-acts { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
   .ask-btn {
     background: var(--panel);
-    border: 1px solid var(--steel);
+    border: 1px solid var(--ink-soft);
     border-radius: 3px;
-    color: var(--steel);
+    color: var(--ink);
     font-family: var(--display);
     font-weight: 600;
     font-size: 14px;
@@ -987,9 +988,9 @@
     text-transform: uppercase;
     padding: 9px 14px;
   }
-  .ask-btn:hover { background: var(--steel); color: #fff; }
-  .ask-btn.primary { background: var(--steel); color: #fff; }
-  .ask-btn.primary:hover { background: var(--brand-deep); }
+  .ask-btn:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
+  .ask-btn.primary { background: var(--brand-accent); border-color: var(--brand-accent); color: var(--brand-deep); }
+  .ask-btn.primary:hover { background: #E07E3F; border-color: #E07E3F; color: var(--brand-deep); }
 
   .booked {
     font-family: var(--mono);
@@ -1405,10 +1406,12 @@
 
     <div class="warnbox">
       <div class="wt">These are Dallas market averages, not Ranger's rates</div>
-      <p>Every figure below comes from published Dallas-area retail pricing as of August 2026:
-        <b>haul $425 / $490 / $575</b> for a 20, 30 and 40 yard with <b>3 / 4 / 5 tons</b> and
-        <b>7 days</b> included, <b>$90 per ton</b> over the allowance, <b>$20 per extra day</b>,
-        <b>$135 dry run</b>. Relocate is left blank because no reliable published figure exists.
+      <p>Dollar figures are Dallas-area retail averages as of August 2026:
+        <b>haul $385 / $425 / $490</b> for Ranger's 15, 20 and 30 yard cans, <b>7 days</b> included,
+        <b>$90 per ton</b> over the allowance, <b>$20 per extra day</b>, <b>$135 dry run</b>.
+        The tonnage allowances are <b>Ranger's own published numbers</b> — 4 tons on the 20, 5 on
+        the 30, none published for the 15, so that one shows a gap. Relocate and live-load wait
+        time are blank because no reliable figure exists. All of it is editable on the Setup tab.
         <br><br>Two warnings worth saying out loud when you show this. First, these are the numbers a
         homeowner gets quoted online — a repeat commercial account almost always pays less, so
         Ranger's real sheet is probably lower. Second, the moment a real customer sees a number from
@@ -1858,7 +1861,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   let activeAcct = 'c1';
   let openReq = null;        // { type, can, size, site } — which request form is open
   let reqWhen = 'Today';
-  let reqSeq = 400;
+  let reqSeq = 500;   // demo orders occupy W-0388..W-0402; customer requests start at W-0501
 
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -2147,8 +2150,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
         tail = reqFormHTML(openReq.type);
       } else {
         tail = `<div class="crow-acts">
-          <button class="ask-btn" data-req="pickup|${k.num}">Pick it up</button>
-          <button class="ask-btn" data-req="swap|${k.num}">Swap it out</button>
+          <button class="ask-btn primary" data-req="pickup|${k.num}">Pick it up</button>
+          <button class="ask-btn primary" data-req="swap|${k.num}">Swap it out</button>
         </div>`;
       }
       return `<div class="crow">
@@ -2174,7 +2177,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
         tail = reqFormHTML('haul');
       } else {
         tail = `<div class="crow-acts">
-          <button class="ask-btn" data-comp="${k.num}">It is full — come get it</button>
+          <button class="ask-btn primary" data-comp="${k.num}">It is full — come get it</button>
         </div>`;
       }
       return `<div class="crow">
@@ -2195,7 +2198,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
           <div class="can-cust">Pick a size and we will come to you.</div>
           <div class="sizes">
             ${['15 yd', '20 yd', '30 yd'].map(s =>
-              `<button class="ask-btn" data-newcan="${s}">${s}</button>`).join('')}
+              `<button class="ask-btn primary" data-newcan="${s}">${s}</button>`).join('')}
           </div>
         </div>`;
 
