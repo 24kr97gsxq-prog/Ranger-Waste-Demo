@@ -1596,7 +1596,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.10.2 &middot; Aug 18, 2026 &middot; 11:45 PM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.11.0 &middot; Aug 19, 2026 &middot; 12:05 AM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -1627,7 +1627,7 @@
       <li><b>The yard and the field talk both ways now.</b> A completed pickup returns the can to yard stock automatically; a TBD delivery pulls one out. Compactor receiver boxes still don't round-trip — the demo assumes the same box always comes back.</li>
       <li><b>Dry-run reason codes are our list, not Ranger's.</b> Blocked access, gate locked, not ready, overfilled, canceled — five guesses at why trucks roll for nothing. The dispatcher will know the real list in ten seconds. Same for the prohibited-items line on customer requests: the item list is generic; Ranger's facilities decide what actually draws a penalty.</li>
       <li><b>Every Payback input is invented</b> — dry runs, days, tons, hours, contamination loads, lost cans, and the $5,000 replacement cost (new can prices run from under $1k used to $10k for a big new box). All placeholders chosen to be conservative. The formulas and the rate sheet are real; the inputs come from Ranger's invoice, call log, and a month of actual capture. Do not quote the total until they do.</li>
-      <li><b>Who's allowed to touch Setup is undecided.</b> Rates and texting switches are powerful — a driver must never see them, and maybe not every dispatcher either. In the build this is a role (admin vs dispatcher vs driver) enforced in the database, not a hidden tab. Quiet hours exist now (Setup, default 8 PM–7 AM — invented) — a late finish queues its text instead of sending. Still open: whether queued texts go out at the open of quiet-hours-end or with the morning batch.</li>
+      <li><b>Who's allowed to touch Setup — and Billing — is undecided.</b> Rates, texting switches, and the invoice screen are powerful; a driver must never see any of them, and maybe not every dispatcher either. In the build this is a role (admin vs dispatcher vs driver) enforced in the database, not a hidden tab. Quiet hours exist now (Setup, default 8 PM–7 AM — invented) — a late finish queues its text instead of sending. Still open: whether queued texts go out at the open of quiet-hours-end or with the morning batch.</li>
       <li><b>The customer's service history is canned.</b> The dated rows are invented; only jobs completed during this demo session are real. In the build, history derives from completed orders — including the delivery photo the customer can open when someone disputes where the can was set.</li>
       <li><b>The status timeline shows five clean steps.</b> Real orders reschedule, block, and bounce. What the customer should see when a stop goes sideways — honest "we hit a problem" or a quiet delay — is a customer-service policy Ranger has to pick.</li>
       <li><b>The DivertScan card is a teaser, not an integration.</b> The diversion numbers on Reports are invented. The real design is an API between two separate systems — a Dalmex weigh-in auto-closes the dispatch order — and it is deliberately not built yet. LEED reporting itself stays DivertScan's job, full stop.</li>
@@ -1975,6 +1975,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       </div>
       ${placard(o.can, o.size)}
       <div class="card-note">${esc(o.note)}</div>
+      ${SITE_NOTES[o.site] ? `<div class="hazard">&#9888; ${esc(SITE_NOTES[o.site])}</div>` : ''}
       <div class="card-foot">${foot}</div>
     </article>`;
   }
