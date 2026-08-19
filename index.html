@@ -1341,6 +1341,7 @@
     <button class="tab" role="tab" aria-selected="false" data-screen="cans">Equipment</button>
     <button class="tab" role="tab" aria-selected="false" data-screen="bill">Billing</button>
     <button class="tab" role="tab" aria-selected="false" data-screen="reports">Reports</button>
+    <button class="tab" role="tab" aria-selected="false" data-screen="payback">Payback</button>
     <button class="tab" role="tab" aria-selected="false" data-screen="setup">Setup</button>
   </div>
   <button class="themebtn" id="themeBtn" aria-label="Switch between day and night view">&#9789;</button>
@@ -1510,6 +1511,31 @@
   </div>
 </section>
 
+<!-- ============ PAYBACK ============ -->
+<section class="screen" id="screen-payback">
+  <div class="bill-wrap">
+    <div class="col-head">
+      <div class="col-title">What a year of this could be worth</div>
+      <div class="col-sub" id="roiTotal"></div>
+    </div>
+
+    <div class="warnbox">
+      <div class="wt">Every input below is a guess — the formulas are the point</div>
+      <p>These five numbers come from the discovery call and a month of real capture, not from us.
+        Type Ranger's real ones and the annual figure recalculates. Rates come from the Setup tab.</p>
+    </div>
+    <div id="rptRoi"></div>
+
+    <div class="nudge" style="border-left-color:var(--green);margin-top:16px">
+      <div class="nt">What this page becomes in production</div>
+      <p>After a month live, every input above fills itself from real capture — actual dry runs
+        prevented, actual days billed, actual tons invoiced, actual office time. Same math, no
+        guesses: a monthly statement of what the software earned. That report is the renewal
+        conversation, every month, automatically.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ============ REPORTS ============ -->
 <section class="screen" id="screen-reports">
   <div class="bill-wrap">
@@ -1533,27 +1559,16 @@
     <div id="rptLeakage"></div>
 
     <div class="col-head" style="margin-top:24px">
-      <div class="col-title">What a year of this could be worth</div>
-      <div class="col-sub" id="roiTotal"></div>
+      <div class="col-title">Nudges to send</div>
+      <div class="col-sub">stubbed — no real texts until 10DLC clears</div>
     </div>
-    <div class="warnbox">
-      <div class="wt">Every input below is a guess — the formulas are the point</div>
-      <p>These five numbers come from the discovery call and a month of real capture, not from us.
-        Type Ranger's real ones and the annual figure recalculates. Rates come from the Setup tab.</p>
-    </div>
-    <div id="rptRoi"></div>
+    <div id="rptNudges"></div>
 
     <div class="col-head" style="margin-top:24px">
       <div class="col-title">Diversion &amp; LEED — lives in DivertScan</div>
       <div class="col-sub">separate system, connected by API</div>
     </div>
     <div id="rptLeed"></div>
-
-    <div class="col-head" style="margin-top:24px">
-      <div class="col-title">Nudges to send</div>
-      <div class="col-sub">stubbed — no real texts until 10DLC clears</div>
-    </div>
-    <div id="rptNudges"></div>
   </div>
 </section>
 
@@ -1573,7 +1588,7 @@
     <div class="warnbox" style="margin:14px 0 4px">
       <div class="wt">Real in this demo, versus drawn</div>
       <p><b>Actually works:</b> assigning stops, advancing status, a customer request landing on the
-        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, the signature pad, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math including the live ROI calculator, and the CSV download &mdash; that
+        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, the signature pad, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, the live Payback calculator, and the CSV download &mdash; that
         file is real.
         <br><b>Placeholder:</b> the addresses on the map are invented, nothing is reporting live GPS,
         every dollar figure is a Dallas market average rather than Ranger's own rate, and compactor fill percentages are invented. The brand colors, though, are Ranger's real ones.</p>
@@ -1587,7 +1602,7 @@
       <li><b>Blocked and contaminated stops go to the office, and stop there.</b> The alert bar tells dispatch, and a human decides. What we don't know: does a contaminated load get re-quoted, refused, or hauled at a penalty rate? That's a pricing policy, not a software feature.</li>
       <li><b>Live load wait-time billing is a guess at a mechanism.</b> "Billable after 30 minutes" is invented. Whether Ranger bills wait time at all, and at what increment, is a discovery question.</li>
       <li><b>The yard and the field talk both ways now.</b> A completed pickup returns the can to yard stock automatically; a TBD delivery pulls one out. Compactor receiver boxes still don't round-trip — the demo assumes the same box always comes back.</li>
-      <li><b>The ROI calculator's five inputs are invented.</b> Two dry runs a month, fifteen uncaptured days, three missed tons, five office hours, $25 loaded cost — all placeholders chosen to be conservative. The formulas and the rate sheet are real; the inputs come from Ranger's invoice, call log, and a month of actual capture. Do not quote the total until they do.</li>
+      <li><b>The Payback tab's five inputs are invented.</b> Two dry runs a month, fifteen uncaptured days, three missed tons, five office hours, $25 loaded cost — all placeholders chosen to be conservative. The formulas and the rate sheet are real; the inputs come from Ranger's invoice, call log, and a month of actual capture. Do not quote the total until they do.</li>
       <li><b>Who's allowed to touch Setup is undecided.</b> Rates and texting switches are powerful — a driver must never see them, and maybe not every dispatcher either. In the build this is a role (admin vs dispatcher vs driver) enforced in the database, not a hidden tab. Also unasked: quiet hours — should a job that finishes at 8 PM text the customer at 8 PM?</li>
       <li><b>The customer's service history is canned.</b> The dated rows are invented; only jobs completed during this demo session are real. In the build, history derives from completed orders — including the delivery photo the customer can open when someone disputes where the can was set.</li>
       <li><b>The status timeline shows five clean steps.</b> Real orders reschedule, block, and bounce. What the customer should see when a stop goes sideways — honest "we hit a problem" or a quiet delay — is a customer-service policy Ranger has to pick.</li>
