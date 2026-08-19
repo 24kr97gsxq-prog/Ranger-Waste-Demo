@@ -1595,7 +1595,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.9.0 &middot; Aug 18, 2026 &middot; 10:15 PM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.10.0 &middot; Aug 18, 2026 &middot; 11:05 PM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -1609,7 +1609,7 @@
     <div class="warnbox" style="margin:14px 0 4px">
       <div class="wt">Real in this demo, versus drawn</div>
       <p><b>Actually works:</b> assigning stops, advancing status, a customer request landing on the
-        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, the signature pad, the contamination bill-through, the overweight warning, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, the live Payback calculator, and the CSV download &mdash; that
+        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, the signature pad, the contamination bill-through, the overweight warning, dry-run reason codes, quiet hours, real phone-GPS stamps (with labeled fallback), date-picked rescheduling, the prohibited-items checkbox, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, the live Payback calculator, and the CSV download &mdash; that
         file is real.
         <br><b>Placeholder:</b> the addresses on the map are invented, nothing is reporting live GPS,
         every dollar figure is a Dallas market average rather than Ranger's own rate, and compactor fill percentages are invented. The brand colors, though, are Ranger's real ones.</p>
@@ -1624,12 +1624,13 @@
       <li><b>The overweight warning fires at 10 tons, which is made up.</b> The real threshold is per-truck legal payload — GVW minus tare — and Ranger knows it per Hino. Editable on Setup; the warning warns, it never blocks a driver who has to move anyway.</li>
       <li><b>Live load wait-time billing is a guess at a mechanism.</b> "Billable after 30 minutes" is invented. Whether Ranger bills wait time at all, and at what increment, is a discovery question.</li>
       <li><b>The yard and the field talk both ways now.</b> A completed pickup returns the can to yard stock automatically; a TBD delivery pulls one out. Compactor receiver boxes still don't round-trip — the demo assumes the same box always comes back.</li>
+      <li><b>Dry-run reason codes are our list, not Ranger's.</b> Blocked access, gate locked, not ready, overfilled, canceled — five guesses at why trucks roll for nothing. The dispatcher will know the real list in ten seconds. Same for the prohibited-items line on customer requests: the item list is generic; Ranger's facilities decide what actually draws a penalty.</li>
       <li><b>Every Payback input is invented</b> — dry runs, days, tons, hours, contamination loads, lost cans, and the $5,000 replacement cost (new can prices run from under $1k used to $10k for a big new box). All placeholders chosen to be conservative. The formulas and the rate sheet are real; the inputs come from Ranger's invoice, call log, and a month of actual capture. Do not quote the total until they do.</li>
-      <li><b>Who's allowed to touch Setup is undecided.</b> Rates and texting switches are powerful — a driver must never see them, and maybe not every dispatcher either. In the build this is a role (admin vs dispatcher vs driver) enforced in the database, not a hidden tab. Also unasked: quiet hours — should a job that finishes at 8 PM text the customer at 8 PM?</li>
+      <li><b>Who's allowed to touch Setup is undecided.</b> Rates and texting switches are powerful — a driver must never see them, and maybe not every dispatcher either. In the build this is a role (admin vs dispatcher vs driver) enforced in the database, not a hidden tab. Quiet hours exist now (Setup, default 8 PM–7 AM — invented) — a late finish queues its text instead of sending. Still open: whether queued texts go out at the open of quiet-hours-end or with the morning batch.</li>
       <li><b>The customer's service history is canned.</b> The dated rows are invented; only jobs completed during this demo session are real. In the build, history derives from completed orders — including the delivery photo the customer can open when someone disputes where the can was set.</li>
       <li><b>The status timeline shows five clean steps.</b> Real orders reschedule, block, and bounce. What the customer should see when a stop goes sideways — honest "we hit a problem" or a quiet delay — is a customer-service policy Ranger has to pick.</li>
       <li><b>The DivertScan card is a teaser, not an integration.</b> The diversion numbers on Reports are invented. The real design is an API between two separate systems — a Dalmex weigh-in auto-closes the dispatch order — and it is deliberately not built yet. LEED reporting itself stays DivertScan's job, full stop.</li>
-      <li><b>The geofence stamp is faked.</b> On a completed stop the demo stamps the can's known coordinates; the real build stamps the phone's GPS at the moment of the tap. Same screen, different truth.</li>
+      <li><b>The geofence stamp is real when the phone allows it.</b> Completing a stop asks the browser for the device's GPS and stamps it, labeled "phone GPS"; if the driver declines or there's no fix in four seconds, it falls back to the can's known coordinates, labeled "can location." The label always tells the truth about which one you're seeing.</li>
       <li><b>Tipping fee entry assumes one fee per stop, typed by the driver.</b> If Ranger runs house accounts at facilities and gets a monthly statement instead of per-load tickets, this field changes shape.</li>
       <li><b>The day-6 nudge has a per-customer mute now</b> — the switch is on the Reports tab. Still guessed: which accounts should default to muted (long construction jobs), and whether mute should live on the customer or the job site.</li>
       <li><b>GPS on cans is assumed, not built.</b> Trackers run roughly $50 to $200 of hardware per unit plus a monthly cellular fee on each one. On a 30-can fleet the subscriptions alone run into the hundreds per month, forever. Truck GPS is nearly free by comparison &mdash; the driver's phone already knows where it is.</li>
@@ -1639,7 +1640,7 @@
       <li><b>Stops re-sequence with arrows now, but nothing routes.</b> The dispatcher can move a stop up or down a truck's day in one tap. Deliberate stop: no automatic route optimization — naive routing produces sequences a driver immediately knows are dumber than his own judgment, and that costs credibility everywhere else.</li>
       <li><b>Seven order types now</b> — delivery, swap, pickup, relocate, dump &amp; return, live load, compactor haul, plus dry runs. Still guessed: whether that's the full set. Ask the dispatcher what else they say on the phone that isn't on this list.</li>
       <li><b>TBD cans get assigned on the truck now.</b> A delivery with no can number asks the driver which can they grabbed from the yard, offers only ready cans of the right size, and moves it from yard stock to the field on completion. Still guessed: whether that's actually how Ranger loads out, or whether the dispatcher assigns at the desk.</li>
-      <li><b>Rescheduled exists now</b> — Push to later moves an order off today without retyping it, keeping notes and history. Still guessed: how far out Ranger actually books (the demo has one bucket, "later this week"; real dispatch may work a rolling 10 days with real dates).</li>
+      <li><b>Rescheduled now has real dates</b> — Push to later defaults to tomorrow, the dispatcher can set any date, and the rail groups deferred work by day. Still guessed: how far out Ranger actually books, and whether tomorrow's board should pre-build from these the night before.</li>
       <li><b>A stop can now close with a signature</b> — finger-drawn on the driver's phone, optional, stored with the stop. Still guessed: when Ranger actually wants one required. Residential driveway drops with damage-waiver exposure are the obvious case; forcing it on every commercial swap would just slow drivers down.</li>
       <li><b>Drivers always have signal.</b> Nothing here works offline. If there are dead zones on their routes, this whole design changes.</li>
       <li><b>Customer texts fire at dispatch and at completion.</b> Two moments, guessed. Which moments actually stop the phone from ringing — and which just annoy — is something only Ranger's call log knows.</li>
@@ -1739,6 +1740,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       next: { assigned: 'Mark en route', dispatched: 'Arrived on site', on_site: 'Finish stop' },
       done: 'Done',
       dryrun: 'Could not service — dry run',
+      dryWhy: ['Blocked access', 'Gate locked', 'Customer not ready', 'Can overfilled', 'Canceled on site'],
       blocked: 'Blocked — cannot reach the can',
       contaminated: 'Overweight / contaminated load',
       blockedLabel: 'Blocked', contamLabel: 'Overweight / contaminated',
@@ -1758,6 +1760,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       next: { assigned: 'Marcar en camino', dispatched: 'Llegué al sitio', on_site: 'Terminar parada' },
       done: 'Terminado',
       dryrun: 'No se pudo hacer — viaje en falso',
+      dryWhy: ['Acceso bloqueado', 'Portón cerrado', 'Cliente no listo', 'Caja sobrellenada', 'Cancelado en sitio'],
       blocked: 'Bloqueado — no se puede llegar a la caja',
       contaminated: 'Sobrepeso / carga contaminada',
       blockedLabel: 'Bloqueado', contamLabel: 'Sobrepeso / contaminada',
@@ -1945,7 +1948,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
            <span class="src">${esc(o.requestedAt)}</span>`;
     } else if (o.status === 'unassigned') {
       foot = o.deferred
-        ? `<span class="time">${esc(o.window)}</span>
+        ? `<input type="date" value="${o.date || ''}" data-defdate="${o.id}"
+             style="font-family:var(--mono);font-size:12px;padding:4px;border:1px solid var(--rule);border-radius:2px">
            <button class="pull" data-unresched="${o.id}">Bring back to today</button>`
         : `<span class="time">${esc(o.window)} window</span>
            ${o.source === 'customer' ? '<span class="src">customer request</span>' : ''}
@@ -1993,9 +1997,19 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     if (tomorrow.length) {
       html += `<div class="rail-section">Tomorrow — came in after cutoff</div>` + tomorrow.map(cardHTML).join('');
     }
-    const deferred = ORDERS.filter(o => o.deferred);
+    const deferred = ORDERS.filter(o => o.deferred).sort((a2, b2) => (a2.date || '').localeCompare(b2.date || ''));
     if (deferred.length) {
-      html += `<div class="rail-section">Rescheduled — later this week</div>` + deferred.map(cardHTML).join('');
+      let lastDate = null;
+      deferred.forEach(o => {
+        if (o.date !== lastDate) {
+          lastDate = o.date;
+          const lbl = o.date
+            ? new Date(o.date + 'T12:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+            : 'No date set';
+          html += `<div class="rail-section">Rescheduled — ${lbl}</div>`;
+        }
+        html += cardHTML(o);
+      });
     }
     $('railList').innerHTML = html;
 
@@ -2095,8 +2109,11 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
            </div>`
         : '';
       const extra = o.status === 'on_site'
-        ? `<button class="stop-act" data-dryrun="${o.id}"
-             style="background:none;color:var(--red);border:1px solid var(--rule)">${L.dryrun}</button>
+        ? `<span style="display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap">
+           <select id="drywhy-${o.id}" style="font-family:var(--body);font-size:12px;padding:6px;border:1px solid var(--rule);border-radius:2px">
+             ${L.dryWhy.map(w => `<option>${w}</option>`).join('')}</select>
+           <button class="stop-act" data-dryrun="${o.id}"
+             style="background:none;color:var(--red);border:1px solid var(--rule)">${L.dryrun}</button></span>
            <button class="stop-act" data-exc="blocked|${o.id}"
              style="background:none;color:var(--red);border:1px solid var(--rule)">${L.blocked}</button>
            <button class="stop-act" data-exc="contaminated|${o.id}"
@@ -2115,7 +2132,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
             <div class="card-note">${esc(o.note)}</div>
             ${SITE_NOTES[o.site] ? `<div class="hazard">&#9888; Site note: ${esc(SITE_NOTES[o.site])}</div>` : ''}
             ${o.exception ? `<div class="booked" style="color:var(--red);background:var(--red-bg)">${o.exception === 'blocked' ? L.blockedLabel : L.contamLabel} — ${lang==='es'?'la oficina fue avisada':'office has been alerted'}</div>` : ''}
-            ${o.status === 'complete' && o.dryRun ? `<div class="booked" style="color:var(--red);background:var(--red-bg)">${L.dryLabel}</div>` : ''}
+            ${o.status === 'complete' && o.dryRun ? `<div class="booked" style="color:var(--red);background:var(--red-bg)">${L.dryLabel}${o.dryWhy ? ' — ' + esc(o.dryWhy) : ''}</div>` : ''}
             ${o.status === 'complete' && o.tons ? `<div class="booked">${L.tonsRec(o.tons)}</div>` : ''}
             ${o.status === 'complete' && o.tip ? `<div class="booked">${lang==='es'?'Cuota de báscula':'Tipping fee paid'}: $${o.tip}</div>` : ''}
             ${o.status === 'complete' && o.signed ? `<div class="booked">&#9997; ${L.sigRec}</div>` : ''}
@@ -2175,6 +2192,11 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       </div>`}
       <span class="q">Anything we should know?</span>
       <textarea id="reqNote" placeholder="Gate codes, where to set it, who to call on site."></textarea>
+      <label style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--ink-soft);margin:4px 0 10px;cursor:pointer">
+        <input type="checkbox" id="reqAck" style="margin-top:2px">
+        <span>No prohibited items: no paint or liquids, no tires, no batteries, no appliances with
+          freon, no hazardous waste. Loads with these get a contamination penalty from the facility,
+          passed through with photo proof.</span></label>
       <button class="ask-btn primary" data-send="1">Send ${kind} request</button>
       <button class="ask-btn" data-cancelreq="1">Cancel</button>
     </div>`;
@@ -2338,7 +2360,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const items = [];
 
     if (o.dryRun) {
-      items.push({ label: 'Dry run — trip made, nothing hauled', qty: '1 trip',
+      items.push({ label: 'Dry run — trip made, nothing hauled' + (o.dryWhy ? ' (' + o.dryWhy + ')' : ''), qty: '1 trip',
                    rate: RATES.dryRun, amount: RATES.dryRun });
       return items;
     }
@@ -2488,7 +2510,17 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     $('setupNotify').innerHTML = rows.map(r => `<div class="togglerow">
       <div><b>${r.t}</b><div class="tdesc">${r.d}</div></div>
       <button class="tswitch" data-notify="${r.k}" aria-pressed="${NOTIFY[r.k]}">${NOTIFY[r.k] ? 'On' : 'Off'}</button>
-    </div>`).join('');
+    </div>`).join('') + `<div class="togglerow">
+      <div><b>Quiet hours</b><div class="tdesc">A job finished at night queues its text instead of
+        sending it. Defaults are a guess — 8 PM to 7 AM.</div></div>
+      <span style="margin-left:auto;display:flex;gap:6px;align-items:center;font-size:12px">
+        <input type="number" min="0" max="23" value="${NOTIFY.quietFrom}" data-nq="quietFrom"
+          style="width:56px;font-family:var(--mono);font-size:13px;padding:5px;border:1px solid var(--rule);border-radius:2px">
+        <span style="color:var(--ink-faint)">to</span>
+        <input type="number" min="0" max="23" value="${NOTIFY.quietTo}" data-nq="quietTo"
+          style="width:56px;font-family:var(--mono);font-size:13px;padding:5px;border:1px solid var(--rule);border-radius:2px">
+        <span style="color:var(--ink-faint)">(24h)</span></span>
+    </div>`;
 
     // Connections & bolt-ons — statuses, not secrets
     $('setupSubs').innerHTML = `
@@ -2995,7 +3027,14 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       // build it is the phone's GPS at the moment of the tap.
       const k = CANS.find(x => x.num === o.can) || COMPACTORS.find(x => x.num === o.can);
       const now = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-      o.gps = (k ? k.lat.toFixed(4) + ', ' + k.lng.toFixed(4) : 'no fix') + ' \u00b7 ' + now;
+      o.gps = (k ? k.lat.toFixed(4) + ', ' + k.lng.toFixed(4) : 'no fix') + ' \u00b7 ' + now + ' \u00b7 can location';
+      // If the phone allows it, the stamp becomes REAL — the device's own GPS at the tap.
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          o.gps = pos.coords.latitude.toFixed(4) + ', ' + pos.coords.longitude.toFixed(4) + ' \u00b7 ' + now + ' \u00b7 phone GPS';
+          render();
+        }, () => {}, { timeout: 4000, maximumAge: 60000 });
+      }
     }
 
     o.status = FLOW[i + 1];
@@ -3013,15 +3052,22 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }
 
     if (o.status === 'dispatched' && NOTIFY.dispatched) {
-      toast('Would text ' + o.contact, `Ranger Waste: your ${o.size} ${o.type}${o.can ? ' (can ' + o.can + ')' : ''} is on the way to ${o.site}. Reply STOP to opt out.`);
+      if (inQuietHours()) toast('Quiet hours — text queued', `Holds until ${NOTIFY.quietTo}:00 AM: on-the-way text to ${o.contact}.`);
+      else toast('Would text ' + o.contact, `Ranger Waste: your ${o.size} ${o.type}${o.can ? ' (can ' + o.can + ')' : ''} is on the way to ${o.site}. Reply STOP to opt out.`);
     }
     if (o.status === 'complete' && NOTIFY.complete) {
-      toast('Would text ' + o.contact, `Ranger Waste: ${o.type} complete at ${o.site}${o.can ? ', can ' + o.can : ''}. Photo attached. Questions? 469-460-3220`);
+      if (inQuietHours()) toast('Quiet hours — text queued', `Holds until ${NOTIFY.quietTo}:00 AM: completion text to ${o.contact}, photo attached.`);
+      else toast('Would text ' + o.contact, `Ranger Waste: ${o.type} complete at ${o.site}${o.can ? ', can ' + o.can : ''}. Photo attached. Questions? 469-460-3220`);
     }
     render();
   }
 
   function submitRequest() {
+    const ack = document.getElementById('reqAck');
+    if (ack && !ack.checked) {
+      toast('One checkbox first', 'Please confirm the load has no prohibited items — it protects you from the facility contamination penalty.');
+      return;
+    }
     const c = CUSTOMERS.find(x => x.id === activeAcct);
     const noteEl = document.getElementById('reqNote');
     const note = (noteEl && noteEl.value.trim()) || 'No extra instructions.';
@@ -3176,7 +3222,9 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     if (rs) {
       const o = ORDERS.find(x => x.id === rs.dataset.resched);
       o.deferred = true; o.driver = null; o.seq = 0; o.status = 'unassigned';
-      o.window = 'Later this week';
+      const d = new Date(); d.setDate(d.getDate() + 1);
+      o.date = d.toISOString().slice(0, 10);
+      o.window = 'flex';
       toast('Rescheduled', `${o.id} pushed to later. Notes, history, and the site record stay with it.`);
       render();
       return;
@@ -3225,9 +3273,13 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const dry = t.closest('[data-dryrun]');
     if (dry) {
       const o = ORDERS.find(x => x.id === dry.dataset.dryrun);
+      const why = document.getElementById('drywhy-' + o.id);
       o.dryRun = true;
+      o.dryWhy = why ? why.value : '';
       o.status = 'complete';
-      toast('Would text dispatch', `${o.site}: dry run. Driver could not service. Office needs to call ${o.customer}.`);
+      o.times = o.times || {};
+      o.times.complete = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      toast('Would text dispatch', `${o.site}: dry run — ${o.dryWhy || 'no reason given'}. Office needs to call ${o.customer}.`);
       render();
       return;
     }
@@ -3349,6 +3401,12 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   });
   document.addEventListener('pointerup', () => { sigCtx = null; });
 
+  function inQuietHours() {
+    const h = new Date().getHours();
+    const { quietFrom: f, quietTo: t2 } = NOTIFY;
+    return f > t2 ? (h >= f || h < t2) : (h >= f && h < t2);
+  }
+
   // Rate edits recalculate the money math live (change fires on blur, so typing isn't interrupted)
   document.addEventListener('change', e => {
     const r = e.target.closest('[data-rate]');
@@ -3360,6 +3418,18 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     renderBill(); renderReports(); renderCust();
   });
   document.addEventListener('change', e => {
+    const dd = e.target.closest('[data-defdate]');
+    if (dd) {
+      const o = ORDERS.find(x => x.id === dd.dataset.defdate);
+      if (o && dd.value) { o.date = dd.value; renderBoard(); }
+      return;
+    }
+    const q = e.target.closest('[data-nq]');
+    if (q) {
+      const v = parseInt(q.value, 10);
+      if (!isNaN(v) && v >= 0 && v <= 23) NOTIFY[q.dataset.nq] = v; else renderSetup();
+      return;
+    }
     const r = e.target.closest('[data-roi]');
     if (!r) return;
     const v = parseFloat(r.value);
@@ -3372,7 +3442,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   const NUDGE_MUTED = new Set();   // customers who opted out of the day-6 text
 
   // Which events send a customer text. Flipped from the Setup tab.
-  const NOTIFY = { dispatched: true, complete: true, day6: true, morning: true };
+  const NOTIFY = { dispatched: true, complete: true, day6: true, morning: true, quietFrom: 20, quietTo: 7 };
   let qbFmt = 'csv';   // 'csv' (universal / Online import) or 'iif' (Desktop)
 
   // ROI calculator inputs — EVERY ONE IS A PLACEHOLDER GUESS. The discovery call and a
