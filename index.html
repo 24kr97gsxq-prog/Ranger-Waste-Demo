@@ -1370,8 +1370,9 @@
     .board { grid-template-columns: 1fr; }
     .rail { position: static; }
     .topbar { height: auto; flex-wrap: wrap; padding: 8px 12px; gap: 8px 14px; }
-    .tabs { margin-left: 0; width: 100%; }
-    .tab { flex: 1; padding: 8px 4px; }
+    .tabs { margin-left: 0; width: 100%; overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab { flex: 0 0 auto; padding: 8px 12px; white-space: nowrap; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
@@ -1668,7 +1669,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.22.2 &middot; Aug 19, 2026 &middot; 8:45 AM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.22.3 &middot; Aug 19, 2026 &middot; 9:05 AM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -2537,6 +2538,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   const CUTOFF_HOUR = 16;   // Ranger promises same-day delivery on orders placed before 4 PM
 
   const money = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const TODAY_ISO = new Date().toISOString().slice(0, 10);
+  const TODAY_US = (d => String(d.getMonth() + 1).padStart(2, '0') + '/' + String(d.getDate()).padStart(2, '0') + '/' + d.getFullYear())(new Date());
 
   // Per-customer rate sheets: an account can override any global rate.
   // ONE example override exists (Bluebonnet — INVENTED numbers, noted on Setup).
@@ -2659,6 +2662,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       ? done.length + ' completed stop' + (done.length === 1 ? '' : 's')
       : 'nothing completed yet';
 
+    const cb2 = document.getElementById('csvBtn');
+    if (cb2) cb2.innerHTML = 'Download for QuickBooks (' + qbFmt.toUpperCase() + ')';
     const unb = done.filter(o => !o.billed).length;
     const uc = document.getElementById('unbilledChip');
     if (uc) uc.textContent = unb ? unb + ' completed, not yet exported' : 'all exported';
@@ -3207,7 +3212,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     done.forEach(o => lineItems(o).forEach(li => {
       const item = itemCode(o, li);
       recs.push([
-        o.customer, '2026-08-18', item,
+        o.customer, TODAY_ISO, item,
         (item === 'DISPOSAL-TON' && o.tons) ? o.tons : '1',
         li.rate === null ? '' : li.rate.toFixed(2),
         `${o.id} — ${li.label} — ${o.site}${li.missing ? ' — DATA MISSING' : ''}`
@@ -3246,9 +3251,9 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     done.forEach(o => {
       const items = lineItems(o).filter(li => li.amount !== null);
       const total = items.reduce((s2, li) => s2 + li.amount, 0);
-      L2.push(['TRNS', 'INVOICE', '08/18/2026', 'Accounts Receivable', o.customer,
+      L2.push(['TRNS', 'INVOICE', TODAY_US, 'Accounts Receivable', o.customer,
         total.toFixed(2), o.id + ' — ' + o.site].join('\t'));
-      items.forEach(li => L2.push(['SPL', 'INVOICE', '08/18/2026', 'Hauling Income',
+      items.forEach(li => L2.push(['SPL', 'INVOICE', TODAY_US, 'Hauling Income',
         o.customer, (-li.amount).toFixed(2), li.label].join('\t')));
       L2.push('ENDTRNS');
     });
@@ -3270,11 +3275,11 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     let payload, fname, mime;
     if (qbFmt === 'iif') {
       payload = iifLines(done).join('\n');
-      fname = (single ? 'ranger-invoice-' + single.id : 'ranger-billing-2026-08-18') + '.iif';
+      fname = (single ? 'ranger-invoice-' + single.id : 'ranger-billing-' + TODAY_ISO) + '.iif';
       mime = 'text/plain';
     } else {
       payload = rows.join('\n');
-      fname = (single ? 'ranger-invoice-' + single.id : 'ranger-billing-2026-08-18') + '.csv';
+      fname = (single ? 'ranger-invoice-' + single.id : 'ranger-billing-' + TODAY_ISO) + '.csv';
       mime = 'text/csv';
     }
     const blob = new Blob([payload], { type: mime });
