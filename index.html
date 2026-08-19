@@ -1621,6 +1621,12 @@
 <section class="screen" id="screen-reports">
   <div class="bill-wrap">
     <div class="col-head">
+      <div class="col-title">Loose ends — what needs a human today</div>
+      <div class="col-sub">pulled live from every tab; nothing on this list bills or moves without someone acting</div>
+    </div>
+    <div id="looseEnds" style="margin-bottom:20px"></div>
+
+    <div class="col-head">
       <div class="col-title">Turnover &amp; leakage</div>
       <div class="col-sub">the numbers a roll-off business runs on</div>
     </div>
@@ -1656,7 +1662,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.19.0 &middot; Aug 19, 2026 &middot; 3:00 AM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.21.0 &middot; Aug 19, 2026 &middot; 3:35 AM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -2083,7 +2089,9 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
         <input id="intakeIn" placeholder='e.g. "Bluebonnet needs a 20 swapped at 9312 Skillman tomorrow"'
           style="flex:1;font-family:var(--body);font-size:12.5px;padding:8px;border:1px solid var(--rule);border-radius:2px">
         <button class="ask-btn primary" data-intake="1" style="margin:0">Parse</button>
-      </div></div>`;
+      </div>
+      <button class="pull" data-nbj="1" style="margin-top:8px">Who should take what? — suggested assignments, with the why</button>
+      <div id="nbjBox"></div></div>`;
     const days = [];
     for (let d2 = 0; d2 < 7; d2++) {
       const dt = new Date(); dt.setDate(dt.getDate() + d2);
@@ -2644,8 +2652,23 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
           <span class="bs">${esc(o.site)}</span>
           <span class="bid">${esc(o.id)}</span>
           ${o.billed ? `<span class="sstat on" style="margin-left:8px">exported ${esc(o.billed)}</span>` : ''}
+          <button class="pull" data-proof="${o.id}">Proof</button>
           <button class="pull" data-billnow="${o.id}" style="margin-left:auto">${o.ticketPending ? 'Awaiting ticket' : 'Bill now &rarr; QuickBooks'}</button>
         </div>
+        ${openProof === o.id ? `<div style="border:1px dashed var(--rule);border-radius:3px;padding:10px 12px;margin:6px 0;font-size:12px">
+          <div class="eyebrow" style="margin-bottom:6px">Proof of service — assembled from the stop, ready for any dispute</div>
+          <div><b>${esc(o.id)}</b> — ${esc(o.type)}, ${esc(o.size)} ${o.can ? '&middot; can ' + esc(o.can) : ''} &middot; ${esc(o.customer)} &middot; ${esc(o.site)}</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin-top:4px">
+            ${o.times ? Object.entries(o.times).map(([k2, v2]) => k2 + ' ' + v2).join(' &middot; ') : ''}
+            ${o.driver ? ' &middot; driver: ' + esc((DRIVERS.find(x => x.id === o.driver) || {}).name || o.driver) : ''}</div>
+          ${o.ticketSrc ? `<div style="margin-top:4px">&#127915; ${esc(o.ticketSrc)}${o.tons ? ' &middot; ' + esc(o.tons) + ' T' : ''}${o.tip ? ' &middot; $' + esc(o.tip) + ' tipping' : ''}</div>` : ''}
+          ${o.signed ? '<div style="margin-top:4px">&#9997; customer signature on file</div>' : ''}
+          ${(o.photos || []).length ? `<div style="display:flex;gap:5px;margin-top:6px">${o.photos.map(u => `<img src="${u}" style="width:52px;height:52px;object-fit:cover;border-radius:2px;border:1px solid var(--rule)">`).join('')}</div>` : ''}
+          ${o.dryRun ? `<div style="margin-top:4px;color:var(--red)">Dry run — ${esc(o.dryWhy || 'reason on the stop')}</div>` : ''}
+          ${o.contam ? '<div style="margin-top:4px;color:var(--red)">Contamination flagged — photo + GPS + time attached</div>' : ''}
+          ${o.note ? `<div style="margin-top:4px;color:var(--ink-soft)">${esc(o.note)}</div>` : ''}
+          <div class="eyebrow" style="margin-top:6px">In the build this is one shareable link — the answer to "prove it" in one tap.</div>
+        </div>` : ''}
         <div style="display:flex;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);padding:4px 0 2px">
           ${(o.photos || []).length ? `<span>&#128247; ${o.photos.length} photo${o.photos.length > 1 ? 's' : ''}</span>` : ''}
           ${o.signed ? '<span>&#9997; signature</span>' : ''}
@@ -2790,6 +2813,28 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
           <div class="sdesc">Sensors instead of the property phoning it in. Same recurring-cost
             shape as can GPS.</div></span>
         <span class="scost">hardware + monthly<br>per unit</span></div>`;
+  }
+
+  function renderLoose() {
+    const el = document.getElementById('looseEnds');
+    if (!el) return;
+    const today = new Date().toISOString().slice(0, 10);
+    const items = [];
+    ORDERS.filter(o => o.status === 'complete' && o.ticketPending).forEach(o =>
+      items.push(['red', o.id + ' — billing blocked: no scale ticket yet (' + o.customer + ')']));
+    ORDERS.filter(o => o.status === 'complete' && !o.ticketPending && !o.billed).forEach(o =>
+      items.push(['amber', o.id + ' — completed, not yet exported to QuickBooks']));
+    ORDERS.filter(o => o.status === 'requested').forEach(o =>
+      items.push(['amber', o.id + ' — customer request waiting for a dispatcher\u2019s yes (' + o.customer + ')']));
+    ORDERS.filter(o => o.deferred && o.date && o.date < today).forEach(o =>
+      items.push(['red', o.id + ' — pushed to ' + o.date + ' and that day has passed']));
+    CANS.filter(k => k.days >= 14).forEach(k =>
+      items.push(['red', 'Can ' + k.num + ' — ' + k.days + ' days at ' + k.site + ': bill rental or schedule the pickup']));
+    YARD_CANS.filter(k => k.status === 'repair').forEach(k =>
+      items.push(['amber', 'Can ' + k.num + ' — in the yard, out of service' + (k.note ? ' (' + k.note + ')' : '')]));
+    el.innerHTML = items.length
+      ? items.map(([c2, m2]) => `<div class="leakrow"><span style="color:${c2 === 'red' ? 'var(--red)' : 'var(--amber-ink)'}">&#9679;</span><span>${esc(m2)}</span><span class="amt"></span></div>`).join('')
+      : '<div class="empty">Nothing loose. Every job is ticketed, billed, or waiting where it should be.</div>';
   }
 
   function renderReports() {
@@ -3289,6 +3334,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }).join('');
   }
 
+  let openProof = null;
   let ageFilter = 0;   // 0 = all, 7 = a week+, 14 = two weeks+
   let weekFilter = null;
   const AUDIT = [];
@@ -3315,7 +3361,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }).join('');
   }
 
-  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderRecurring(); renderYard(); renderCans(); renderBill(); renderReports(); renderSetup(); renderExcBar(); renderHandoff(); renderQbPreview(); renderAudit(); }
+  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderRecurring(); renderYard(); renderCans(); renderBill(); renderReports(); renderSetup(); renderExcBar(); renderHandoff(); renderQbPreview(); renderAudit(); renderLoose(); }
 
   function toast(label, msg) {
     const el = document.createElement('div');
@@ -3716,6 +3762,51 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       if (cv) { cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); delete cv.dataset.drawn; }
       return;
     }
+    if (t.closest('[data-nbj]')) {
+      const box = document.getElementById('nbjBox');
+      const pool = ORDERS.filter(o => o.status === 'unassigned' && !o.deferred);
+      if (!pool.length) { box.innerHTML = '<div class="empty">Nothing unassigned today.</div>'; return; }
+      const rows = DRIVERS.map(d => {
+        const mine = ORDERS.filter(o => o.driver === d.id && o.status !== 'complete');
+        const last = mine.slice().sort((a2, b2) => b2.seq - a2.seq)[0];
+        const lk = last ? (CANS.find(x => x.num === last.can) || COMPACTORS.find(x => x.num === last.can)) : null;
+        const from = lk || YARD;
+        let best = null, bs = -1, why = '';
+        pool.forEach(o => {
+          const k = CANS.find(x => x.num === o.can) || COMPACTORS.find(x => x.num === o.can);
+          const dist = k ? Math.hypot(k.lat - from.lat, k.lng - from.lng) : 0.08;
+          const dwell = k && k.days ? Math.min(k.days, 14) : 0;
+          const score = (0.1 - Math.min(dist, 0.1)) * 100 + dwell + (mine.length < 3 ? 5 : 0);
+          if (score > bs) {
+            bs = score; best = o;
+            why = [k ? 'closest open job to ' + (last ? 'their last stop' : 'the yard') : 'no fixed can yet',
+                   dwell >= 7 ? 'can has sat ' + k.days + ' days' : null,
+                   mine.length < 3 ? 'truck has room today' : null].filter(Boolean).join(' · ');
+          }
+        });
+        return best ? `<div class="leakrow"><span><b>${esc(d.truck)}</b> &rarr; ${esc(best.id)} — ${esc(best.type)}, ${esc(best.site)}</span>
+          <span class="how">${esc(why)}</span>
+          <button class="pull" data-nbjassign="${best.id}|${d.id}">Assign</button></div>` : '';
+      }).filter(Boolean).join('');
+      box.innerHTML = `<div style="margin-top:8px">${rows}
+        <div class="eyebrow" style="margin-top:5px">Scored on distance, can dwell, and truck load — in the build, urgency, windows,
+        capacity, and revenue join in. Suggestions only; nothing moves until you tap Assign.</div></div>`;
+      return;
+    }
+    const nba = t.closest('[data-nbjassign]');
+    if (nba) {
+      const [oid, did] = nba.dataset.nbjassign.split('|');
+      const o = ORDERS.find(x => x.id === oid);
+      const d = DRIVERS.find(x => x.id === did);
+      if (o && d && o.status === 'unassigned') {
+        o.driver = did; o.status = 'assigned';
+        o.seq = Math.max(0, ...ORDERS.filter(x => x.driver === did).map(x => x.seq)) + 1;
+        logAudit(o.id + ' → ' + d.truck + ' (accepted a suggestion)');
+        toast('Assigned', o.id + ' is on ' + d.truck + '. The suggestion was accepted by a human — that distinction is the product.');
+        render();
+      }
+      return;
+    }
     const sg2 = t.closest('[data-suggest]');
     if (sg2) {
       const did = sg2.dataset.suggest;
@@ -3843,6 +3934,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       return;
     }
     if (t.closest('#csvBtn')) { exportBooks(); return; }
+    const pf = t.closest('[data-proof]');
+    if (pf) { openProof = (openProof === pf.dataset.proof) ? null : pf.dataset.proof; renderBill(); return; }
     const bn = t.closest('[data-billnow]');
     if (bn) {
       const o = ORDERS.find(x => x.id === bn.dataset.billnow);
