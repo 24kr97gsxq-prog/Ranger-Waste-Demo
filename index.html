@@ -1490,6 +1490,10 @@
       </ol>
       <div class="exportrow">
         <button class="ask-btn primary" id="csvBtn">Download for QuickBooks</button>
+        <button class="ask-btn" id="prevBtn">Preview what QuickBooks receives</button>
+      </div>
+      <div id="qbPreview" style="display:none"></div>
+      <div style="display:none">
         <button class="ask-btn" id="qbBtn">About the QuickBooks export</button>
         <button class="ask-btn" id="emailBtn">About emailing invoices</button>
       </div>
@@ -1634,7 +1638,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.12.0 &middot; Aug 19, 2026 &middot; 12:25 AM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.15.0 &middot; Aug 19, 2026 &middot; 1:20 AM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -1648,7 +1652,7 @@
     <div class="warnbox" style="margin:14px 0 4px">
       <div class="wt">Real in this demo, versus drawn</div>
       <p><b>Actually works:</b> assigning stops, advancing status, a customer request landing on the
-        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, the shift handoff log, the aging filter on the cans list, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, tonnage + tipping fee capture, the signature pad, the contamination bill-through, the overweight warning, dry-run reason codes, quiet hours, real phone-GPS stamps (with labeled fallback), date-picked rescheduling, the prohibited-items checkbox, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, the live Payback calculator, and the CSV download &mdash; that
+        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, the shift handoff log, the aging filter on the cans list, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, the at-the-facility scale-ticket flow (real camera capture, OCR-proposes-driver-confirms, the simulated Dalmex pull), tonnage + tipping fee capture, the signature pad, the contamination bill-through, the overweight warning, dry-run reason codes, quiet hours, real phone-GPS stamps (with labeled fallback), date-picked rescheduling, the prohibited-items checkbox, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, the live Payback calculator, and the CSV download &mdash; that
         file is real.
         <br><b>Placeholder:</b> the addresses on the map are invented, nothing is reporting live GPS,
         every dollar figure is a Dallas market average rather than Ranger's own rate, and compactor fill percentages are invented. The brand colors, though, are Ranger's real ones.</p>
@@ -1664,6 +1668,7 @@
       <li><b>Live load wait-time billing is a guess at a mechanism.</b> "Billable after 30 minutes" is invented. Whether Ranger bills wait time at all, and at what increment, is a discovery question.</li>
       <li><b>The yard and the field talk both ways now.</b> A completed pickup returns the can to yard stock automatically; a TBD delivery pulls one out. Compactor receiver boxes still don't round-trip — the demo assumes the same box always comes back.</li>
       <li><b>The handoff log assumes shifts exist.</b> If one dispatcher runs the whole day, it's still useful as tomorrow-morning notes-to-self — but whether Ranger runs shifts, and who reads the log first thing, is a discovery question. In the build, notes carry the author's name; the demo has no login, so they don't.</li>
+      <li><b>The scale ticket now logs where it actually happens — at the facility, after the site.</b> Finishing site work on a haul-away marks the load "ticket pending"; the driver scans, types, or pulls the Dalmex weigh-in later. The camera capture is real; the OCR is simulated (the real build extracts and still makes the driver confirm — numbers never auto-bind). The Dalmex pull is the DivertScan bridge acted out: simulated here, API later. Still guessed: whether the office chases pending tickets same-day or at shift end.</li>
       <li><b>Dry-run reason codes are our list, not Ranger's.</b> Blocked access, gate locked, not ready, overfilled, canceled — five guesses at why trucks roll for nothing. The dispatcher will know the real list in ten seconds. Same for the prohibited-items line on customer requests: the item list is generic; Ranger's facilities decide what actually draws a penalty.</li>
       <li><b>Every Payback input is invented</b> — dry runs, days, tons, hours, contamination loads, lost cans, and the $5,000 replacement cost (new can prices run from under $1k used to $10k for a big new box). All placeholders chosen to be conservative. The formulas and the rate sheet are real; the inputs come from Ranger's invoice, call log, and a month of actual capture. Do not quote the total until they do.</li>
       <li><b>Who's allowed to touch Setup — and Billing — is undecided.</b> Rates, texting switches, and the invoice screen are powerful; a driver must never see any of them, and maybe not every dispatcher either. In the build this is a role (admin vs dispatcher vs driver) enforced in the database, not a hidden tab. Quiet hours exist now (Setup, default 8 PM–7 AM — invented) — a late finish queues its text instead of sending. Still open: whether queued texts go out at the open of quiet-hours-end or with the morning batch.</li>
@@ -1790,6 +1795,10 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       noStops: 'No stops assigned. Check with the office.',
       nav: 'Navigate', callOfc: 'Call office',
       sig: 'Customer signature (optional)', sigClear: 'Clear', sigRec: 'Signature on file',
+      tkTitle: 'Scale ticket', tkBody: 'Log it at the facility — scan it, type it, or pull the Dalmex weigh-in.',
+      tkScan: 'Scan ticket \u2192 camera', tkDalmex: 'Weighed at Dalmex \u2014 pull ticket',
+      tkTons: 'Net tons', tkFee: 'Tipping fee ($)', tkConfirm: 'Confirm ticket',
+      tkPending: 'Scale ticket pending \u2014 site work done, weight comes from the facility',
       tonsRec: t => `${t} net tons recorded`,
       dryLabel: 'Dry run — nothing hauled',
       canLabel: 'Can'
@@ -1810,6 +1819,10 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       noStops: 'No hay paradas asignadas. Hable con la oficina.',
       nav: 'Navegar', callOfc: 'Llamar oficina',
       sig: 'Firma del cliente (opcional)', sigClear: 'Borrar', sigRec: 'Firma registrada',
+      tkTitle: 'Boleta de b\u00e1scula', tkBody: 'Reg\u00edstrela en la instalaci\u00f3n \u2014 esc\u00e1nela, escr\u00edbala, o traiga el pesaje de Dalmex.',
+      tkScan: 'Escanear boleta \u2192 c\u00e1mara', tkDalmex: 'Pesado en Dalmex \u2014 traer boleta',
+      tkTons: 'Toneladas netas', tkFee: 'Cuota de b\u00e1scula ($)', tkConfirm: 'Confirmar boleta',
+      tkPending: 'Boleta pendiente \u2014 trabajo en sitio listo, el peso viene de la instalaci\u00f3n',
       tonsRec: t => `${t} toneladas netas registradas`,
       dryLabel: 'Viaje en falso — no se cargó nada',
       canLabel: 'Caja'
@@ -2002,7 +2015,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
            ${o.source === 'customer' ? '<span class="src">customer request</span>' : ''}
            <button class="pull" data-resched="${o.id}" style="margin-left:auto">Push to later</button>`;
     } else {
-      foot = `<button class="chip s-${o.status}" data-advance="${o.id}"
+      foot = `${o.ticketPending ? '<span class="after">ticket pending</span>' : ''}<button class="chip s-${o.status}" data-advance="${o.id}"
            ${o.status === 'complete' ? 'disabled' : ''}>${LABEL[o.status]}</button>
          <span class="time">${esc(o.window)}</span>
          <button class="pull" data-up="${o.id}" title="Move earlier">&#9650;</button>
@@ -2184,6 +2197,26 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
             ${o.status === 'complete' && o.tons ? `<div class="booked">${L.tonsRec(o.tons)}</div>` : ''}
             ${o.status === 'complete' && o.tip ? `<div class="booked">${lang==='es'?'Cuota de báscula':'Tipping fee paid'}: $${o.tip}</div>` : ''}
             ${o.status === 'complete' && o.signed ? `<div class="booked">&#9997; ${L.sigRec}</div>` : ''}
+            ${o.ticketSrc ? `<div class="stamps">&#127915; ${esc(o.ticketSrc)}</div>` : ''}
+            ${o.status === 'complete' && o.ticketPending ? `
+              <div class="capture" style="border-style:solid;border-color:var(--brand-accent)">
+                <strong>${L.tkTitle}</strong> ${L.tkBody}
+                <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+                  <label class="ask-btn primary" style="cursor:pointer;margin:0">${L.tkScan}
+                    <input type="file" accept="image/*" capture="environment" data-scan="${o.id}" style="display:none"></label>
+                  <button class="ask-btn" data-dalmex="${o.id}">${L.tkDalmex}</button>
+                </div>
+                ${o.pendSrc ? `<div class="stamps" style="margin-top:7px;color:var(--amber-ink)">${esc(o.pendSrc)}</div>` : ''}
+                <div style="margin-top:9px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+                  <span><span style="font-family:var(--display);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:4px">${L.tkTons}</span>
+                    <input id="tk-tons-${o.id}" type="number" step="0.01" min="0" value="${o.pendTons || ''}" placeholder="4.20"
+                      style="width:100px;font-family:var(--mono);font-size:13px;padding:7px;border:1px solid var(--rule);border-radius:2px"></span>
+                  <span><span style="font-family:var(--display);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:4px">${L.tkFee}</span>
+                    <input id="tk-fee-${o.id}" type="number" step="0.01" min="0" value="${o.pendFee || ''}" placeholder="68.50"
+                      style="width:100px;font-family:var(--mono);font-size:13px;padding:7px;border:1px solid var(--rule);border-radius:2px"></span>
+                  <button class="ask-btn primary" data-tksave="${o.id}" style="margin:0">${L.tkConfirm}</button>
+                </div>
+              </div>` : ''}
             ${o.status === 'complete' && o.gps ? `<div class="gpsstamp">&#128205; ${o.gps}</div>` : ''}
           </div>
           ${placard(o.can, o.size, L.canLabel)}
@@ -2499,6 +2532,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
           <span class="bc">${esc(o.customer)}</span>
           <span class="bs">${esc(o.site)}</span>
           <span class="bid">${esc(o.id)}</span>
+          ${o.billed ? `<span class="sstat on" style="margin-left:8px">exported ${esc(o.billed)}</span>` : ''}
+          <button class="pull" data-billnow="${o.id}" style="margin-left:auto">${o.ticketPending ? 'Awaiting ticket' : 'Bill now &rarr; QuickBooks'}</button>
         </div>
         ${items.map(li => `<div class="li">
           <span>${esc(li.label)}</span>
@@ -2927,52 +2962,94 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     $('mapCount').textContent = CANS.length + ' cans, ' + COMPACTORS.length + ' compactors, ' + DRIVERS.length + ' trucks';
   }
 
-  function exportCSV() {
+  function itemCode(o, li) {
+    return o.type === 'service'
+      ? (li.label.toLowerCase().includes('disposal') ? 'COMPACTOR-DISPOSAL'
+        : li.label.toLowerCase().includes('rental') ? 'COMPACTOR-RENTAL' : 'COMPACTOR-HAUL')
+      : li.label.toLowerCase().includes('dump & return') ? 'DUMP-RETURN'
+      : li.label.toLowerCase().includes('live load') ? 'LIVE-LOAD'
+      : li.label.toLowerCase().includes('disposal') ? 'DISPOSAL-TON'
+      : li.label.toLowerCase().includes('rental') ? 'RENTAL-DAY'
+      : li.label.toLowerCase().includes('dry') ? 'DRY-RUN'
+      : 'HAUL-' + o.size.replace(/\D/g, '');
+  }
+
+  // One builder feeds both the downloaded file and the on-screen preview —
+  // what Ranger sees in the preview is byte-for-byte what QuickBooks receives.
+  function csvRecords(done) {
+    const recs = [];
+    done.forEach(o => lineItems(o).forEach(li => {
+      const item = itemCode(o, li);
+      recs.push([
+        o.customer, '2026-08-18', item,
+        (item === 'DISPOSAL-TON' && o.tons) ? o.tons : '1',
+        li.rate === null ? '' : li.rate.toFixed(2),
+        `${o.id} — ${li.label} — ${o.site}${li.missing ? ' — DATA MISSING' : ''}`
+      ]);
+    }));
+    return recs;
+  }
+
+  function renderQbPreview() {
+    const el = document.getElementById('qbPreview');
+    if (!el || el.style.display === 'none') return;
     const done = ORDERS.filter(o => o.status === 'complete');
+    if (!done.length) {
+      el.innerHTML = '<div class="empty">Nothing completed yet — finish a stop on the Driver tab.</div>';
+      return;
+    }
+    const invoices = done.length;
+    const recs = csvRecords(done);
+    const total = done.reduce((s2, o) => s2 + lineItems(o).reduce((s3, li) => s3 + (li.amount || 0), 0), 0);
+    const head = `<div class="eyebrow" style="margin:12px 0 6px">Today's batch — ${invoices} invoice${invoices === 1 ? '' : 's'}, ${recs.length} line item${recs.length === 1 ? '' : 's'}, ${money(total)} — exactly what the download contains</div>`;
+    if (qbFmt === 'iif') {
+      el.innerHTML = head + `<pre style="font-family:var(--mono);font-size:11px;line-height:1.7;background:var(--inset);border:1px solid var(--rule);border-radius:3px;padding:12px;overflow-x:auto;white-space:pre">${iifLines(done).map(l => esc(l)).join('\n')}</pre>`;
+    } else {
+      el.innerHTML = head + `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
+        <tr>${['Customer', 'InvoiceDate', 'ItemName', 'Qty', 'Rate', 'Description'].map(h =>
+          `<th style="text-align:left;font-family:var(--display);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);padding:6px 8px;border-bottom:2px solid var(--rule)">${h}</th>`).join('')}</tr>
+        ${recs.map(r => `<tr>${r.map((c, i) =>
+          `<td style="padding:6px 8px;border-bottom:1px solid var(--rule-soft);${i === 2 ? 'font-family:var(--mono);font-size:11px' : ''}${i === 4 ? 'font-family:var(--mono);text-align:right' : ''}${String(c).includes('DATA MISSING') ? 'color:var(--red)' : ''}">${esc(String(c))}</td>`).join('')}</tr>`).join('')}
+      </table></div>`;
+    }
+  }
+
+  function iifLines(done) {
+    const L2 = ['!TRNS\tTRNSTYPE\tDATE\tACCNT\tNAME\tAMOUNT\tMEMO',
+                '!SPL\tTRNSTYPE\tDATE\tACCNT\tNAME\tAMOUNT\tMEMO', '!ENDTRNS'];
+    done.forEach(o => {
+      const items = lineItems(o).filter(li => li.amount !== null);
+      const total = items.reduce((s2, li) => s2 + li.amount, 0);
+      L2.push(['TRNS', 'INVOICE', '08/18/2026', 'Accounts Receivable', o.customer,
+        total.toFixed(2), o.id + ' — ' + o.site].join('\t'));
+      items.forEach(li => L2.push(['SPL', 'INVOICE', '08/18/2026', 'Hauling Income',
+        o.customer, (-li.amount).toFixed(2), li.label].join('\t')));
+      L2.push('ENDTRNS');
+    });
+    return L2;
+  }
+
+  function exportBooks(subset) {
+    const done = subset || ORDERS.filter(o => o.status === 'complete');
     if (!done.length) { toast('Nothing to export', 'Finish a stop on the Driver tab first.'); return; }
+    const single = done.length === 1 ? done[0] : null;
 
     const q = v => `"${String(v).replace(/"/g, '""')}"`;
     const rows = [['Customer', 'InvoiceDate', 'ItemName', 'Qty', 'Rate', 'Description'].join(',')];
-
-    done.forEach(o => {
-      lineItems(o).forEach(li => {
-        const item = o.type === 'service'
-          ? (li.label.toLowerCase().includes('disposal') ? 'COMPACTOR-DISPOSAL'
-            : li.label.toLowerCase().includes('rental') ? 'COMPACTOR-RENTAL' : 'COMPACTOR-HAUL')
-          : li.label.toLowerCase().includes('dump & return') ? 'DUMP-RETURN'
-          : li.label.toLowerCase().includes('live load') ? 'LIVE-LOAD'
-          : li.label.toLowerCase().includes('disposal') ? 'DISPOSAL-TON'
-          : li.label.toLowerCase().includes('rental') ? 'RENTAL-DAY'
-          : li.label.toLowerCase().includes('dry') ? 'DRY-RUN'
-          : 'HAUL-' + o.size.replace(/\D/g, '');
-        const qty = (item === 'DISPOSAL-TON' && o.tons) ? o.tons : '1';
-        rows.push([
-          q(o.customer), q('2026-08-18'), q(item), q(qty),
-          q(li.rate === null ? '' : li.rate.toFixed(2)),
-          q(`${o.id} — ${li.label} — ${o.site}${li.missing ? ' — DATA MISSING' : ''}`)
-        ].join(','));
-      });
-    });
+    csvRecords(done).forEach(r => rows.push(r.map(q).join(',')));
 
     let held = 0;
     done.forEach(o => lineItems(o).forEach(li => { if (li.amount === null) held++; }));
 
     let payload, fname, mime;
     if (qbFmt === 'iif') {
-      const L2 = ['!TRNS\tTRNSTYPE\tDATE\tACCNT\tNAME\tAMOUNT\tMEMO',
-                  '!SPL\tTRNSTYPE\tDATE\tACCNT\tNAME\tAMOUNT\tMEMO', '!ENDTRNS'];
-      done.forEach(o => {
-        const items = lineItems(o).filter(li => li.amount !== null);
-        const total = items.reduce((s2, li) => s2 + li.amount, 0);
-        L2.push(['TRNS', 'INVOICE', '08/18/2026', 'Accounts Receivable', o.customer,
-          total.toFixed(2), o.id + ' — ' + o.site].join('\t'));
-        items.forEach(li => L2.push(['SPL', 'INVOICE', '08/18/2026', 'Hauling Income',
-          o.customer, (-li.amount).toFixed(2), li.label].join('\t')));
-        L2.push('ENDTRNS');
-      });
-      payload = L2.join('\n'); fname = 'ranger-billing-2026-08-18.iif'; mime = 'text/plain';
+      payload = iifLines(done).join('\n');
+      fname = (single ? 'ranger-invoice-' + single.id : 'ranger-billing-2026-08-18') + '.iif';
+      mime = 'text/plain';
     } else {
-      payload = rows.join('\n'); fname = 'ranger-billing-2026-08-18.csv'; mime = 'text/csv';
+      payload = rows.join('\n');
+      fname = (single ? 'ranger-invoice-' + single.id : 'ranger-billing-2026-08-18') + '.csv';
+      mime = 'text/csv';
     }
     const blob = new Blob([payload], { type: mime });
     const a = document.createElement('a');
@@ -2980,12 +3057,17 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     a.download = fname;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    const stamp = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    done.forEach(o => { o.billed = stamp; });
     const heldNote = held
       ? ` ⚠ ${held} billable line${held === 1 ? '' : 's'} HELD BACK — missing weight or rate. Fix on Driver/Setup and re-export, or Ranger under-bills silently.`
       : '';
-    toast('Exported ' + qbFmt.toUpperCase(), (qbFmt === 'iif'
-      ? 'Desktop IIF written. Have the accountant validate the first import.'
-      : `${rows.length - 1} line items at market-average rates.`) + heldNote);
+    toast('Exported ' + qbFmt.toUpperCase(), (single
+      ? `Invoice ${single.id} for ${single.customer} is in your downloads — import into QuickBooks and send it. One stop, one file, minutes after the work.`
+      : (qbFmt === 'iif'
+        ? 'Desktop IIF written. Have the accountant validate the first import.'
+        : `${rows.length - 1} line items at market-average rates.`)) + heldNote);
+    renderBill();
   }
 
   function fillClass(f) { return f >= 90 ? 'late' : f >= 70 ? 'warn' : ''; }
@@ -3054,7 +3136,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }).join('');
   }
 
-  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderYard(); renderCans(); renderBill(); renderReports(); renderSetup(); renderExcBar(); renderHandoff(); }
+  function render() { renderBoard(); renderDriver(); renderCust(); renderMap(); renderComps(); renderYard(); renderCans(); renderBill(); renderReports(); renderSetup(); renderExcBar(); renderHandoff(); renderQbPreview(); }
 
   function toast(label, msg) {
     const el = document.createElement('div');
@@ -3115,6 +3197,12 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     o.status = FLOW[i + 1];
     o.times = o.times || {};
     o.times[o.status] = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+    // Real workflow: the weight doesn't exist until the truck crosses the facility scale.
+    if (o.status === 'complete' && !o.tons && !o.dryRun &&
+        ['swap', 'pickup', 'dumpreturn', 'service'].includes(o.type)) {
+      o.ticketPending = true;
+    }
 
     // A completed final pickup puts the can back in the yard — the two lists talk now.
     if (o.status === 'complete' && o.type === 'pickup' && o.can && !o.dryRun) {
@@ -3365,6 +3453,40 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       return;
     }
 
+    const dx = t.closest('[data-dalmex]');
+    if (dx) {
+      const o = ORDERS.find(x => x.id === dx.dataset.dalmex);
+      const t2 = (2.5 + Math.random() * 3.5);
+      o.pendTons = t2.toFixed(2);
+      o.pendFee = (t2 * 16.5).toFixed(2);
+      o.pendSrc = 'DivertScan \u00b7 Dalmex ticket #' + (85000 + Math.floor(Math.random() * 3000)) +
+        (lang === 'es' ? ' (simulado \u2014 la versi\u00f3n real llega por API y cierra la orden sola)' : ' (simulated \u2014 the real build pulls this over the API and auto-closes the order)');
+      renderDriver();
+      return;
+    }
+    const tk = t.closest('[data-tksave]');
+    if (tk) {
+      const o = ORDERS.find(x => x.id === tk.dataset.tksave);
+      const tv = parseFloat((document.getElementById('tk-tons-' + o.id) || {}).value);
+      const fv = parseFloat((document.getElementById('tk-fee-' + o.id) || {}).value);
+      if (isNaN(tv) || tv <= 0) {
+        toast(lang === 'es' ? 'Faltan toneladas' : 'Tons missing',
+          lang === 'es' ? 'La boleta necesita el peso neto.' : 'The ticket needs the net weight.');
+        return;
+      }
+      o.tons = tv.toFixed(2);
+      if (!isNaN(fv) && fv > 0) o.tip = fv.toFixed(2);
+      o.ticketSrc = (o.pendSrc ? o.pendSrc.split(' \u2014 ')[0].split(' (sim')[0] : (lang === 'es' ? 'Escrita en la b\u00e1scula' : 'Typed at the scale'))
+        + ' \u00b7 ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      delete o.pendTons; delete o.pendFee; delete o.pendSrc;
+      o.ticketPending = false;
+      if (tv > RATES.maxTons) toast(lang === 'es' ? '\u26a0 Sobrepeso' : '\u26a0 Overweight',
+        lang === 'es'
+          ? `${tv} toneladas supera el l\u00edmite de ${RATES.maxTons}.`
+          : `${tv} tons is over the ${RATES.maxTons}-ton warning threshold.`);
+      render();
+      return;
+    }
     const dry = t.closest('[data-dryrun]');
     if (dry) {
       const o = ORDERS.find(x => x.id === dry.dataset.dryrun);
@@ -3417,7 +3539,23 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
           toast('Would text customer', `${o.customer}: Ranger is coming to ${o.site} today (${o.window}). Please make sure the area is clear and any gate is open.`));
       return;
     }
-    if (t.closest('#csvBtn')) { exportCSV(); return; }
+    if (t.closest('#prevBtn')) {
+      const el = document.getElementById('qbPreview');
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+      renderQbPreview();
+      return;
+    }
+    if (t.closest('#csvBtn')) { exportBooks(); return; }
+    const bn = t.closest('[data-billnow]');
+    if (bn) {
+      const o = ORDERS.find(x => x.id === bn.dataset.billnow);
+      if (o.ticketPending) {
+        toast('Scale ticket first', `${o.id} is still waiting on the facility weight — bill it the moment the driver confirms the ticket.`);
+        return;
+      }
+      exportBooks([o]);
+      return;
+    }
     if (t.closest('#qbBtn'))    { $('qbSheet').classList.add('on'); return; }
     if (t.closest('#emailBtn')) { $('emailSheet').classList.add('on'); return; }
     const cs = t.closest('[data-closesheet]');
@@ -3514,6 +3652,23 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   });
   document.addEventListener('change', e => {
     if (e.target.id === 'reqAck') { reqAckOn = e.target.checked; return; }
+    const sc2 = e.target.closest('[data-scan]');
+    if (sc2 && sc2.files && sc2.files.length) {
+      const o = ORDERS.find(x => x.id === sc2.dataset.scan);
+      o.ticketPhoto = true;
+      toast(lang === 'es' ? 'Leyendo la boleta\u2026' : 'Reading the ticket\u2026',
+        lang === 'es' ? 'OCR proponiendo n\u00fameros \u2014 usted confirma.' : 'OCR proposing numbers \u2014 you confirm them.');
+      setTimeout(() => {
+        const t2 = (2 + Math.random() * 4);
+        o.pendTons = t2.toFixed(2);
+        o.pendFee = (t2 * 16.5).toFixed(2);
+        o.pendSrc = (lang === 'es'
+          ? 'Foto guardada \u00b7 OCR propuso los n\u00fameros (simulado en el demo) \u2014 confirme abajo'
+          : 'Photo saved \u00b7 OCR proposed these numbers (simulated in the demo) \u2014 confirm below');
+        renderDriver();
+      }, 1200);
+      return;
+    }
     const dd = e.target.closest('[data-defdate]');
     if (dd) {
       const o = ORDERS.find(x => x.id === dd.dataset.defdate);
