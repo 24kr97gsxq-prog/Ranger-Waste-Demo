@@ -576,13 +576,13 @@
 
   /* signature: stencilled can placard */
   .placard.comp {
-    background: var(--brand-peach);
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+    background: #1F8A9C;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
     min-width: 74px;
   }
   .placard.comp .placard-label,
-  .placard.comp .placard-size { color: #8a5533; }
-  .placard.comp .placard-num { color: var(--brand-deep); font-size: 21px; }
+  .placard.comp .placard-size { color: rgba(255,255,255,.75); }
+  .placard.comp .placard-num { color: #fff; font-size: 21px; }
 
   .fillbar {
     height: 7px;
@@ -596,8 +596,8 @@
   .fillbar .fill.late { background: var(--red); }
 
   .mk-comp {
-    background: var(--brand-peach);
-    color: var(--brand-deep);
+    background: #1F8A9C;
+    color: #fff;
     font-family: var(--display);
     font-weight: 700;
     font-size: 13px;
@@ -1258,8 +1258,8 @@
   .mk-can.warn { background: #F38C4C; color: var(--brand-deep); border-color: var(--brand-deep); }
   .mk-can.late { background: var(--red); color: #fff; border-color: #fff; }
   .mk-truck {
-    background: var(--amber);
-    color: var(--steel);
+    background: #4A78B0;
+    color: #fff;
     font-family: var(--display);
     font-weight: 700;
     font-size: 15px;
@@ -1430,6 +1430,15 @@
         this screen, it has to be Ranger's number, not a market average.</p>
     </div>
 
+    <div class="nudge" style="border-left-color:var(--red);margin-bottom:14px">
+      <div class="nt">How a contaminated load bills</div>
+      <p><b>Driver flags it</b> at the stop (photo + GPS + time attach automatically) &rarr;
+        <b>red alert bar</b> hits every office screen &rarr; the office picks:
+        <b>"Bill penalty through &amp; complete"</b> puts the facility fee (set on Setup, $250
+        placeholder) on this tab as its own line with the proof attached, or <b>"Office handled
+        it"</b> clears the flag with no charge &mdash; eating it for a good customer is a valid
+        choice. Either way the fee never bills silently, and never without a human.</p>
+    </div>
     <div id="billList"></div>
 
     <div class="gaps">
@@ -1462,11 +1471,11 @@
       <div class="simflag">Real map, demo addresses</div>
       <div id="mapBox"></div>
       <div class="legend">
-        <span><i style="background:var(--amber)"></i>truck</span>
+        <span><i style="background:#4A78B0"></i>truck</span>
         <span><i style="background:var(--mk-can-bg);border:1px solid var(--mk-can-ink)"></i>can, under 7 days</span>
         <span><i style="background:#F38C4C"></i>7 to 13 days</span>
         <span><i style="background:var(--red)"></i>14 days or more</span>
-        <span><i style="background:var(--brand-peach)"></i>compactor</span>
+        <span><i style="background:#1F8A9C"></i>compactor</span>
         <span><i style="background:var(--green)"></i>yard</span>
       </div>
     </div>
@@ -1585,7 +1594,8 @@
 
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
-  Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.
+  Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.9.0 &middot; Aug 18, 2026 &middot; 10:15 PM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -2508,8 +2518,10 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
         <span class="scost">included</span></div>
       <div class="subrow"><span class="sstat on">Demo tiles</span>
         <span><span class="sname">Map</span>
-          <div class="sdesc">OpenStreetMap for the demo. Production moves to Google or Mapbox,
-            billed per map load.</div></span>
+          <div class="sdesc">The driver's Navigate button opens the Google Maps app by link —
+            free forever, no API, no key. Only an embedded Google/Mapbox map meters: ~10,000 free
+            loads/month, then per-load. At Ranger's volume that's realistically $0, but it needs a
+            billing card on file and a domain-locked key. OSM stays free with neither.</div></span>
         <span class="scost">$0 now &middot; ~$0\u2013$25 / mo</span></div>
       <div class="subrow"><span class="sstat opt">Planned</span>
         <span><span class="sname">DivertScan bridge</span>
@@ -2795,8 +2807,8 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const trucks = DRIVERS.map(d => {
       const x = X(d.lng), y = Y(d.lat), n = d.truck.replace(/\D/g, '');
       return `<g><title>${d.truck} — ${d.name}</title>
-        <circle cx="${x}" cy="${y}" r="15" fill="var(--amber)" stroke="#fff" stroke-width="2.5"/>
-        <text x="${x}" y="${y + 5}" text-anchor="middle" fill="var(--steel)"
+        <circle cx="${x}" cy="${y}" r="15" fill="#4A78B0" stroke="#fff" stroke-width="2.5"/>
+        <text x="${x}" y="${y + 5}" text-anchor="middle" fill="#fff"
           font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="15">${n}</text></g>`;
     }).join('');
 
