@@ -1668,7 +1668,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.22.0 &middot; Aug 19, 2026 &middot; 3:55 AM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.22.1 &middot; Aug 19, 2026 &middot; 4:10 AM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
@@ -1682,10 +1682,22 @@
     <div class="warnbox" style="margin:14px 0 4px">
       <div class="wt">Real in this demo, versus drawn</div>
       <p><b>Actually works:</b> assigning stops, advancing status, a customer request landing on the
-        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, the shift handoff log, the aging filter on the cans list, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, the at-the-facility scale-ticket flow (real camera capture, OCR-proposes-driver-confirms, the simulated Dalmex pull), tonnage + tipping fee capture, the signature pad, the contamination bill-through, the fuel &amp; environmental surcharge with overfill and prohibited-item fees, the overweight warning, dry-run reason codes, quiet hours, real phone-GPS stamps (with labeled fallback), date-picked rescheduling, the prohibited-items checkbox, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, the live Payback calculator, and the CSV download &mdash; that
-        file is real.
+        board, the day-summary strip, the Setup tab (rate edits recalculate Billing and Reports live; texting switches control the previews), drag-and-drop assignment, the after-cutoff override, order status timelines on the customer page, driver navigation links and status timestamps, on-truck can assignment from yard stock, pickups returning cans to the yard, the nudge mute, the shift handoff log, the aging filter on the cans list, compactor hauls, dump &amp; return and live load orders, blocked/contaminated exception flags reaching the office alert bar, the at-the-facility scale-ticket flow (real camera capture, OCR-proposes-driver-confirms, the simulated Dalmex pull), tonnage + tipping fee capture, the signature pad, the contamination bill-through, the fuel &amp; environmental surcharge with overfill and prohibited-item fees, the overweight warning, dry-run reason codes, quiet hours, real phone-GPS stamps (with labeled fallback), date-picked rescheduling, the prohibited-items checkbox, reschedule (Push to later / Bring back), stop re-sequencing arrows, the CSV/IIF export toggle, SMS previews showing the exact number and message, dry runs, site notes that persist for the next driver, yard availability, English/Spanish, the day/night switch (moon button, follows the device by default), the map, the Reports tab math, the live Payback calculator, per-order "Bill now" exports with the exported-time badge and the
+        awaiting-ticket guard, the on-screen QuickBooks preview (built by the same code as the file &mdash;
+        byte-for-byte), job numbers minted at request and carried through every screen, text, and export,
+        recurring schedules with the build-tomorrow button, the typed-order intake parser (rule-based),
+        the per-lane sequence suggestion with Undo, the week strip filter, the session change log, the
+        new-customer quote form, stop photos with real camera capture and thumbnails, the QR can-scan flow,
+        per-customer rate overrides (the Bluebonnet example), the Loose Ends queue, next-best-job suggestions
+        with reasons and a human-tap Assign, the one-tap Proof-of-service record, the fleet &amp; permit date
+        alarms feeding Loose Ends, and the CSV download &mdash; that file is real.
         <br><b>Placeholder:</b> the addresses on the map are invented, nothing is reporting live GPS,
-        every dollar figure is a Dallas market average rather than Ranger's own rate, and compactor fill percentages are invented. The brand colors, though, are Ranger's real ones.</p>
+        every dollar figure is a Dallas market average rather than Ranger's own rate (except one deliberately
+        invented per-customer example), compactor fill percentages are reported-not-sensed, QR/OCR decodes
+        and morning-check replies and truck ETAs and the Dalmex pull are simulated, stop photos live only
+        for this session, the offline banner is a design preview, and every fleet date, VIN, and permit
+        renewal is made up &mdash; the alarms are real, the paperwork isn't. The brand colors, though, are
+        Ranger's real ones.</p>
     </div>
     <ol>
       <li><b>How compactors actually get serviced.</b> They are in now as their own order type: the unit stays bolted down, the receiver box gets pulled and returned, no swap and no dwell clock. What is guessed is everything around that — whether hauls are scheduled, called in by the property, or triggered by a fill reading.</li>
