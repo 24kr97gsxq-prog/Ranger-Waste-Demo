@@ -2731,6 +2731,9 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
       });
     });
 
+    let held = 0;
+    done.forEach(o => lineItems(o).forEach(li => { if (li.amount === null) held++; }));
+
     let payload, fname, mime;
     if (qbFmt === 'iif') {
       const L2 = ['!TRNS\tTRNSTYPE\tDATE\tACCNT\tNAME\tAMOUNT\tMEMO',
@@ -2754,9 +2757,12 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     a.download = fname;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    toast('Exported ' + qbFmt.toUpperCase(), qbFmt === 'iif'
-      ? 'Desktop IIF written. Have the accountant validate the first import — IIF fails silently.'
-      : `${rows.length - 1} line items at Dallas market average. Swap in Ranger rates before this touches a real customer.`);
+    const heldNote = held
+      ? ` ⚠ ${held} billable line${held === 1 ? '' : 's'} HELD BACK — missing weight or rate. Fix on Driver/Setup and re-export, or Ranger under-bills silently.`
+      : '';
+    toast('Exported ' + qbFmt.toUpperCase(), (qbFmt === 'iif'
+      ? 'Desktop IIF written. Have the accountant validate the first import.'
+      : `${rows.length - 1} line items at market-average rates.`) + heldNote);
   }
 
   function fillClass(f) { return f >= 90 ? 'late' : f >= 70 ? 'warn' : ''; }
