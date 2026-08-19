@@ -290,7 +290,12 @@
     padding: 7px 12px;
     font-size: 12.5px;
     color: var(--ink-soft);
+    cursor: pointer;
+    font-family: var(--body);
   }
+  .bstat:hover { border-color: var(--brand-accent); }
+  .bstat.active { border-color: var(--brand-accent); background: var(--amber-bg); color: var(--ink); }
+  .card.dim { opacity: .22; }
   .bstat b { font-family: var(--display); font-size: 17px; font-weight: 700; color: var(--ink); margin-right: 4px; }
   .bstat.alert b { color: var(--red); }
   .lanebar { height: 5px; background: var(--rule-soft); border-radius: 3px; overflow: hidden; margin: 4px 0 8px; }
@@ -1884,6 +1889,15 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
   const LABEL = { assigned:'Assigned', dispatched:'Dispatched', on_site:'On site', complete:'Complete' };
 
   let picked = null;
+  let boardFilter = null;   // 'trucks' | 'waiting' | 'done' | 'exc' | null
+
+  function boardMatch(o) {
+    if (boardFilter === 'trucks')  return !!o.driver && o.status !== 'complete';
+    if (boardFilter === 'waiting') return o.status === 'requested' || (o.status === 'unassigned' && !o.deferred);
+    if (boardFilter === 'done')    return o.status === 'complete';
+    if (boardFilter === 'exc')     return !!o.exception;
+    return true;
+  }
   let activeDriver = 'd1';
   let activeAcct = 'c1';
   let openReq = null;        // { type, can, size, site } — which request form is open
@@ -1930,7 +1944,7 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     }
 
     const draggable = (o.status === 'unassigned' || (o.driver && o.status !== 'complete')) ? 'draggable="true" data-drag="' + o.id + '"' : '';
-    return `<article ${draggable} class="card t-${o.type} ${o.status === 'requested' ? 'req' : ''} ${o.exception ? 'exception' : ''} ${picked === o.id ? 'picked' : ''}" data-pick="${o.id}">
+    return `<article ${draggable} class="card t-${o.type} ${o.status === 'requested' ? 'req' : ''} ${o.exception ? 'exception' : ''} ${picked === o.id ? 'picked' : ''} ${boardFilter && !boardMatch(o) ? 'dim' : ''}" data-pick="${o.id}">
       <div class="card-main">
         <div class="card-type">${o.type}</div>
         <p class="card-site">${esc(o.site)}</p>
@@ -1972,13 +1986,16 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
     const doneCt = all.filter(o => o.status === 'complete').length;
     const onTrucks = all.filter(o => o.driver && o.status !== 'complete').length;
     const excCt = all.filter(o => o.exception).length;
-    $('boardStats').innerHTML = `
-      <div class="bstat"><b>${all.length}</b> orders today</div>
-      <div class="bstat"><b>${onTrucks}</b> on trucks</div>
-      <div class="bstat"><b>${reqs.length + rail.length}</b> waiting</div>
-      <div class="bstat"><b>${doneCt}</b> done</div>
-      ${excCt ? `<div class="bstat alert"><b>${excCt}</b> need the office</div>` : ''}
-      <div class="bstat"><b>${DRIVERS.length}</b> trucks out</div>`;
+    const chip = (f, n, label, extra) => `<button class="bstat ${extra || ''} ${boardFilter === f ? 'active' : ''}"
+        data-bfilter="${f}"><b>${n}</b> ${label}</button>`;
+    $('boardStats').innerHTML =
+      chip('all', all.length, 'orders today') +
+      chip('trucks', onTrucks, 'on trucks') +
+      chip('waiting', reqs.length + rail.length, 'waiting') +
+      chip('done', doneCt, 'done') +
+      (excCt ? chip('exc', excCt, 'need the office', 'alert') : '') +
+      `<button class="bstat" data-goto="cans"><b>${DRIVERS.length}</b> trucks out &middot; see the map &rarr;</button>` +
+      (boardFilter ? `<button class="bstat" data-bfilter="all">clear filter &times;</button>` : '');
 
     $('boardRoot').classList.toggle('assigning', !!picked);
     $('pickHint').textContent = picked
@@ -2992,6 +3009,20 @@ Bluebonnet Roofing,2026-08-18,DISPOSAL-TON,4.2,,"Roofing, over 3 ton allowance"<
 
   document.addEventListener('click', e => {
     const t = e.target;
+
+    const bf = t.closest('[data-bfilter]');
+    if (bf) {
+      const f = bf.dataset.bfilter;
+      boardFilter = (f === 'all' || boardFilter === f) ? null : f;
+      renderBoard();
+      return;
+    }
+    const go = t.closest('[data-goto]');
+    if (go) {
+      const tb = document.querySelector('.tab[data-screen="' + go.dataset.goto + '"]');
+      if (tb) tb.click();
+      return;
+    }
 
     const tab = t.closest('.tab');
     if (tab) {
