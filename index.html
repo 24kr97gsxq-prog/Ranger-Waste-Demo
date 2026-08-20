@@ -1367,30 +1367,42 @@
   }
 
   @media (max-width: 820px) {
-    .board { grid-template-columns: 1fr; gap: 12px; padding: 12px 12px 76px; }
-    /* grid items default to min-width:auto — without this the lane column
-       cannot shrink below its content and the whole page overflows sideways */
-    .board > * { min-width: 0; }
-    .rail { position: static; min-width: 0; }
-    .lanes { grid-auto-flow: row; grid-auto-columns: auto; overflow-x: visible; gap: 12px; }
-    .lane { min-width: 0; }
+    .board { grid-template-columns: 1fr; }
+    .rail { position: static; }
     .topbar { height: auto; flex-wrap: wrap; padding: 8px 12px; gap: 8px 14px; }
     .tabs { margin-left: 0; width: 100%; overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     .tabs::-webkit-scrollbar { display: none; }
     .tab { flex: 0 0 auto; padding: 8px 12px; white-space: nowrap; }
-    /* the wrapped topbar is taller than 56px, so a sticky banner at top:56px
-       would sit underneath it */
-    .cutoff { position: static; }
   }
-  @media (max-width: 560px) {
-    #intakeIn { min-width: 0; }
-    .bstat[data-week] { min-width: 0; padding: 5px 2px; }
-    .subrow, .leakrow, .li { gap: 8px; }
-    .subrow .scost, .leakrow .amt { min-width: 0; }
-    .driver-wrap, .cans-wrap, .cust-wrap, .bill-wrap { padding: 14px 12px 76px; }
-    .ask { right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding: 8px 11px; font-size: 12px; }
-    .toast-stack { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+  /* Phone-width pass — Derek's report: office tabs squeeze below ~640px.
+     Money rows flip from rigid grids to wrapping rows; labels take the full
+     line, numbers drop to a second line, nothing overflows. */
+  @media (max-width: 640px) {
+    .li { display: flex; flex-wrap: wrap; gap: 3px 10px; }
+    .li > span:first-child { flex: 1 1 100%; }
+    .li-amt { margin-left: auto; min-width: 0; }
+    .li-rate { white-space: normal; }
+
+    .leakrow { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+    .leakrow > span:first-child { flex: 1 1 100%; }
+    .leakrow .amt { margin-left: auto; min-width: 0; }
+
+    .subrow { grid-template-columns: auto 1fr; }
+    .subrow .scost { grid-column: 1 / -1; text-align: left; min-width: 0; }
+
+    .col-head { flex-wrap: wrap; }
+    .col-head .col-sub { margin-left: 0; flex: 1 1 100%; }
+
+    .bill-wrap, .cans-wrap, .cust-wrap, .driver-wrap { padding-left: 10px; padding-right: 10px; }
+    #mapBox { height: 340px; }
+    .tl .st .sl { font-size: 9px; letter-spacing: .02em; }
+    .grand { font-size: 12.5px; }
+    .bstat { padding: 6px 9px; font-size: 12px; }
+    .handoff { margin: 10px 10px 0; }
+    .bstats { padding: 10px 10px 0; }
+    .board { padding: 10px; }
   }
+
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
@@ -1686,7 +1698,7 @@
 <div class="footnote">
   Ranger Waste Management LLC &middot; 1212 S. Riverfront #150, Dallas, TX 75207 &middot; 469-460-3220<br>
   Demo only. Nothing is saved, no texts send, no invoices go out. Reload to reset.<br>
-  <span style="font-family:var(--mono);font-size:10.5px">Build v0.22.4 &middot; Aug 19, 2026 &middot; 5:56 PM</span>
+  <span style="font-family:var(--mono);font-size:10.5px">Build v0.23.0 &middot; Aug 19, 2026 &middot; 9:40 AM</span>
 </div>
 
 <button class="ask" id="askBtn">What we guessed</button>
